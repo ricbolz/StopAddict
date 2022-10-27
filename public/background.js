@@ -16,10 +16,20 @@ function getRules(){
         let id;
         
         while(i < rule.length) {
+            let urls;
+            let urlss;
             url = rule[i].condition.urlFilter;
+            urls = url.split("||");
+           
+            if(urls[1]) {
+                urlss = urls[1]
+            } else {
+                urlss = urls[0];
+            }
+            
             id = rule[i].id
-            urlList[url] = id;
-            console.log(url + " id: " + id);
+            urlList[urlss] = id;
+            console.log(urlss + " id: " + id);
             i++;
         }
     })
@@ -48,7 +58,8 @@ function addRules(url) {
                             type: "block",
                         },
                         condition: {
-                            urlFilter: url,
+                            isUrlFilterCaseSensitive: false,
+                            urlFilter:  url,
                             resourceTypes: ["main_frame"]
                         },
                         id: ids,
@@ -100,28 +111,19 @@ function clearRule() {
     }
     
 }
-
+getRules();
 console.log(urlList);
+
 chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
     getRules();
-    const queryInfo = {active: true, lastFocusedWindow: true};
-
-        chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-            const url = tabs[0].url;
-            console.log(url + " mantap brooo")
-            if(urlList[url]) {
-                chrome.tabs.update({
-                    url: "blocked.html"
-               });
-            }
-    });
+    
     if(msg.action === 'block') {
        
         addRules(msg.url);
         chrome.runtime.sendMessage({
             status: "is blocked"
         });
-       
+        
     }
 
     if(msg.action === 'remove') {
@@ -129,6 +131,7 @@ chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
         chrome.runtime.sendMessage({
             status: msg.url + " remove success"
         });
+        
     }
 
     if(msg.action === "clear") {
@@ -136,22 +139,50 @@ chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
         chrome.runtime.sendMessage({
             status: msg.url+ " clear success"
         })
+        
     }
     if(msg.action === 'getUrl') {
         
         console.log(urlList);
         
     }
+
+    
     chrome.runtime.sendMessage({
         action : "sendUrl",
         obj : urlList
     })
+
+    
+    
     
 })
 
 
+chrome.tabs.onActivated.addListener(function (tabId) {
+    const queryInfo = {active: true, lastFocusedWindow: true};
+    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+        const url = tabs[0].url;
+        let splitURL = url.split("/")
+        console.log(splitURL[2]);
+        if(urlList[splitURL[2]]) {
+            chrome.tabs.update(tabs[0].id, {url: "blocked.html"});
+        }
+    });
+    
+});
 
-
+chrome.tabs.onUpdated.addListener(function(tabId) {
+    const queryInfo = {active: true, lastFocusedWindow: true};
+    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+        const url = tabs[0].url;
+        let splitURL = url.split("/")
+        console.log(splitURL[2]);
+        if(urlList[splitURL[2]]) {
+            chrome.tabs.update(tabs[0].id, {url: "blocked.html"});
+        }
+    });
+})
 
 
 

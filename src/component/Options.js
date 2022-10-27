@@ -11,14 +11,9 @@ export default function Options() {
     const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
     
     useEffect(() => {
-        const queryInfo = {active: true, lastFocusedWindow: true};
+        
 
-        chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-            const url = tabs[0].url;
-            let splitURL = url.split("/")
-            console.log(splitURL[2]);
-            setUrl(splitURL[2]);
-        });
+        
 
         chrome.runtime.sendMessage({
             action : "getUrl"
@@ -60,9 +55,7 @@ export default function Options() {
     return(
         <div className={styles.page}>
             
-            <div className="header">
-                <h1>Stop Addict</h1>
-            </div>
+            
            
             
                 <div>

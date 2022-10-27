@@ -138,9 +138,7 @@ export default function Popup(){
     return(
         <div className={styles.page}>
             
-            <div className="header">
-                <h1>Stop Addict</h1>
-            </div>
+            
            
             <div className="body">
                 <div style={{margin: 10}}>
@@ -168,14 +166,7 @@ export default function Popup(){
                     clearRule();
                 }}>Clear all url</button>
                 <div>{block}</div>
-                <div>
-                
-                {Object.keys(urlList).map((keyName, i) => (
-                    <div>
-                        <List id={urlList[keyName]} url={keyName}/>
-                    </div>
-                ))}
-                </div>
+               
             </div>
         </div>
     )
