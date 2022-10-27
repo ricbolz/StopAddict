@@ -12,7 +12,9 @@ export default function Popup(){
     const [url, setUrl] = useState('');
     const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
-   
+    const [blocked, setBlocked] = useState(false);
+    const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
+    
     useEffect(() => {
         const queryInfo = {active: true, lastFocusedWindow: true};
 
@@ -31,15 +33,31 @@ export default function Popup(){
             if(msg.action === "sendUrl") {
                 
                 setUrlList(msg.obj);
-                console.log(urlList);
+                if(urlList[url]) {
+                    setBlocked(true);
+                } 
+                
             }
         })
 
+       if(url === extensionID) {
+        setBlocked(true);
+       }
+
         
-    }, [block]);
 
-   
-
+        
+    });
+    chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+        if(msg.status) {
+            setBlock(msg.status);
+        }
+        
+       });
+       
+    
+    
+    
     function getRule(){
         
     }
@@ -55,14 +73,23 @@ export default function Popup(){
 
         chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
             if(msg.status) {
-                setBlock(url + " " + msg.status);
-                
+                setBlock(msg.status);
             }
             
             
         })
+
         
+
+        chrome.tabs.update({
+            url: "blocked.html"
+       });
         
+       chrome.runtime.sendMessage({
+        action : "getUrl"
+    })
+
+    setBlocked(true);
         
     }
 
@@ -72,14 +99,23 @@ export default function Popup(){
         url: url
        });
 
-      
-
-       chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+       chrome.runtime.onMessage.addListener( (msg={}, sender) => {
         if(msg.status) {
-            setBlock(url + " " + msg.status);
+            setBlock(msg.status);
+            setBlocked(false);
         }
         
        });
+
+       
+
+       chrome.tabs.update({
+            url: "https://"+url
+       });
+
+       chrome.runtime.sendMessage({
+        action : "getUrl"
+    })
 
        
     }
@@ -108,16 +144,18 @@ export default function Popup(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    Are you want to Block this site?
+                    {(blocked) ? "This site is blocked" : "Are you want to block " + url + "?"}
                 </div>
+                {(!blocked) ? 
                 <button className={styles.error}
-                    onClick={() => {
-                        addRule(url);
-                      
-                    }}
-                >
-                    <div style={{color: 'white'}}>Block this site</div>
-                </button>
+                onClick={() => {
+                    addRule(url);
+                  
+                }}
+            >
+                <div style={{color: 'white'}}>Block this site</div>
+            </button> : ''}
+                
                 <button
                     onClick={() => {
                         removeRule(url);
@@ -129,11 +167,13 @@ export default function Popup(){
                 onClick={() => {
                     clearRule();
                 }}>Clear all url</button>
-                <div id="url">{url}</div>
                 <div>{block}</div>
                 <div>
+                
                 {Object.keys(urlList).map((keyName, i) => (
-                    <List id={urlList[keyName]} url={keyName}/>
+                    <div>
+                        <List id={urlList[keyName]} url={keyName}/>
+                    </div>
                 ))}
                 </div>
             </div>

@@ -5,9 +5,10 @@ var urlList = {};
 
 
 function getRules(){
-    for (var key in  urlList) {
-        delete urlList[key];
-    } 
+    for (let i =0; i < urlList.length; i++) {
+        urlList.splice(i,0);
+    }
+    
     
     chrome.declarativeNetRequest.getDynamicRules(function(rule) {
         let i = 0;
@@ -22,6 +23,7 @@ function getRules(){
             i++;
         }
     })
+    console.log(urlList);
 }
 
 
@@ -98,9 +100,21 @@ function clearRule() {
     }
     
 }
-getRules();
+
 console.log(urlList);
 chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
+    getRules();
+    const queryInfo = {active: true, lastFocusedWindow: true};
+
+        chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+            const url = tabs[0].url;
+            console.log(url + " mantap brooo")
+            if(urlList[url]) {
+                chrome.tabs.update({
+                    url: "blocked.html"
+               });
+            }
+    });
     if(msg.action === 'block') {
        
         addRules(msg.url);
@@ -113,25 +127,29 @@ chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
     if(msg.action === 'remove') {
         removeURL(msg.url);
         chrome.runtime.sendMessage({
-            status: "remove success"
+            status: msg.url + " remove success"
         });
     }
 
     if(msg.action === "clear") {
         clearRule();
         chrome.runtime.sendMessage({
-            status: "clear success"
+            status: msg.url+ " clear success"
         })
     }
     if(msg.action === 'getUrl') {
-        getRules();
-        chrome.runtime.sendMessage({
-            action : "sendUrl",
-            obj : urlList
-        })
+        
+        console.log(urlList);
+        
     }
+    chrome.runtime.sendMessage({
+        action : "sendUrl",
+        obj : urlList
+    })
     
 })
+
+
 
 
 

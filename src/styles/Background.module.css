@@ -36,13 +36,14 @@
     border-radius: 10px;
     justify-content: center;
     align-items: center;
+    margin-top: 10px;
 }
 
 .remove {
     background-color: rgba(231,13,13,100);
     width: 100px;
     border-radius: 10px;
-    padding: 5px;
+    padding: 0px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: small;
     color: '#fff'

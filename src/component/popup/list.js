@@ -1,5 +1,12 @@
+/*global chrome */
 import styles from '../../styles/Background.module.css';
 export default function List(props){
+    function removeRule(url) {
+        chrome.runtime.sendMessage({
+         action: 'remove',
+         url: url
+        }); 
+     }
     return(
         <div className={styles.list} 
             
@@ -15,7 +22,11 @@ export default function List(props){
                 <button
                 id={props.id}
                 className={styles.remove}
-                ><div className={styles.buttontext}>Remove</div></button>
+                ><div className={styles.buttontext}
+                onClick={() => {
+                    removeRule(props.url)
+                }}
+                >Remove</div></button>
             </div>
         </div>
     )
