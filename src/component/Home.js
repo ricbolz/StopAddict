@@ -14,6 +14,8 @@ export default function Home() {
                 defaultActiveKey="Main"
                 className="mb-3"
                 justify
+                mountOnEnter={true}
+                unmountOnExit={true}
             >
                 <Tab eventKey="Main" title="Main">
                     <Popup/>

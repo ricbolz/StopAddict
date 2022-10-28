@@ -1,114 +1,69 @@
 /*global chrome */
-var storage = chrome.storage.sync;
+var storage = chrome.storage.local;
 console.log("extension loaded")
 var urlList = {};
+
 
 
 function getRules(){
     for (let i =0; i < urlList.length; i++) {
         urlList.splice(i,0);
     }
-    
-    
-    chrome.declarativeNetRequest.getDynamicRules(function(rule) {
-        let i = 0;
-        let url;
-        let id;
-        
-        while(i < rule.length) {
-            let urls;
-            let urlss;
-            url = rule[i].condition.urlFilter;
-            urls = url.split("||");
-           
-            if(urls[1]) {
-                urlss = urls[1]
-            } else {
-                urlss = urls[0];
-            }
-            
-            id = rule[i].id
-            urlList[urlss] = id;
-            console.log(urlss + " id: " + id);
-            i++;
+    storage.get(null, function(items) {
+        var allKeys = Object.keys(items);
+        for(var key in items) {
+            urlList[key] = items[key];
         }
+        console.log(allKeys);
     })
     console.log(urlList);
 }
 
 
 function addRules(url) {
-    chrome.declarativeNetRequest.getDynamicRules(function(rule){
-        let i = 0;
-        let isFind = false;
-        while(i < rule.length && !isFind) {
-            if(url === rule[i].condition.urlFilter) {
-                isFind = true;
-            }
-            i++;
+
+    storage.get(url, function(value) {
+        if(!value.key) {
+            let obj = {}
+            let ids = (urlList.length > 0) ? urlList[urlList.length-1] : 0
+            obj[url] = ids + 1;
+            storage.set(obj, function(data) {
+                if(chrome.runtime.lastError) {
+                    console.log(chrome.runtime.lastError.message);
+                    return;
+                }
+            })
         }
-        let ids = (i === 0) ?  0 : rule[rule.length-1].id;
-        ids = ids + 2;
-        if(!isFind){
-        chrome.declarativeNetRequest.updateDynamicRules(
-            {
-                addRules: [
-                    {
-                        action: {
-                            type: "block",
-                        },
-                        condition: {
-                            isUrlFilterCaseSensitive: false,
-                            urlFilter:  url,
-                            resourceTypes: ["main_frame"]
-                        },
-                        id: ids,
-                        priority: 1,
-                    },
-                ],
-                removeRuleIds : [ids],
-            },
-            () => {
-                console.log(rule.length)
-                console.log(url + "is blocked");
-                
-                urlList[url] = ids;
-                console.log(url + " : " + urlList[url])
-                
-            }
-            
-        );
-        } else {
+        else {
             console.log("already blocked");
         }
-    });
+    })
+    
+    
 
 }
 
 function removeURL(url) {
-    chrome.declarativeNetRequest.updateDynamicRules(
-        {
-            removeRuleIds:[urlList[url]],
-        },
-        () => {
-            delete urlList[url];
-            console.log("delete success");
-            console.log(urlList);
-        }
-    );
+
+    storage.remove(url, function() {
+        delete urlList[url];
+        console.log("deleted" + url);
+    })
+    
 }
 
 function clearRule() {
     for(var key in urlList) {
-        chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds:[urlList[key]]
-        },
-        () => {
-            
-            console.log("clear success");
-
-        })
+        delete urlList[key]
+       
     }
+
+    storage.clear(function() {
+        let error = chrome.runtime.lastError;
+        if (error) {
+            console.error(error);
+        }
+    })
     
 }
 getRules();
@@ -143,7 +98,7 @@ chrome.runtime.onMessage.addListener(async (msg = {}, sender) => {
     }
     if(msg.action === 'getUrl') {
         
-        console.log(urlList);
+        //console.log(urlList);
         
     }
 
@@ -177,8 +132,10 @@ chrome.tabs.onUpdated.addListener(function(tabId) {
     chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
         const url = tabs[0].url;
         let splitURL = url.split("/")
+        let splitURL2 = splitURL[2].split(".");
         console.log(splitURL[2]);
         if(urlList[splitURL[2]]) {
+            
             chrome.tabs.update(tabs[0].id, {url: "blocked.html"});
         }
     });

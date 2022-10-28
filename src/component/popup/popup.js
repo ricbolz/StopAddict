@@ -24,7 +24,6 @@ export default function Popup(){
             console.log(splitURL[2]);
             setUrl(splitURL[2]);
         });
-
         chrome.runtime.sendMessage({
             action : "getUrl"
         })
@@ -47,7 +46,7 @@ export default function Popup(){
         
 
         
-    });
+    }, [block]);
     chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
         if(msg.status) {
             setBlock(msg.status);
@@ -67,9 +66,12 @@ export default function Popup(){
         chrome.runtime.sendMessage({
             action: 'block',
             url : url,     
+        })  
+        
+        chrome.runtime.sendMessage({
+            action: "addUrl",
+            added : url
         })
-
-       
 
         chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
             if(msg.status) {
@@ -79,7 +81,6 @@ export default function Popup(){
             
         })
 
-        
 
         chrome.tabs.update({
             url: "blocked.html"
