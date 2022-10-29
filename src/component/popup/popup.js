@@ -19,16 +19,39 @@ export default function Popup(){
         const queryInfo = {active: true, lastFocusedWindow: true};
 
         chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-            const url = tabs[0].url;
-            let splitURL = url.split("/")
-            console.log(splitURL[2]);
-            setUrl(splitURL[2]);
+            var url;
+            if(tabs[0].url) {
+                url = tabs[0].url;
+                let splitURL = url.split("/");
+                let splitURL2 = splitURL[2].split(".");
+                let finalURL;
+                if(splitURL2.length >= 3) {
+                    finalURL = splitURL[2].substring(splitURL[2].indexOf('.')+1);
+                } else {
+                    finalURL = splitURL[2]
+                }
+            
+                if(finalURL === extensionID) {
+                    console.log("ext ID");
+                } else {
+                    console.log(finalURL);
+                }
+                setUrl(finalURL);
+            }
+
+
+           
+            
         });
+
+        if(url === extensionID) {
+            setBlocked(true);
+        }
         chrome.runtime.sendMessage({
             action : "getUrl"
         })
 
-        chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+        chrome.runtime.onMessage.addListener( (msg={}, sender) => {
             if(msg.action === "sendUrl") {
                 
                 setUrlList(msg.obj);
@@ -39,15 +62,13 @@ export default function Popup(){
             }
         })
 
-       if(url === extensionID) {
-        setBlocked(true);
-       }
+       
 
         
 
         
-    }, [block]);
-    chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+    }, [url]);
+    chrome.runtime.onMessage.addListener( (msg={}, sender) => {
         if(msg.status) {
             setBlock(msg.status);
         }

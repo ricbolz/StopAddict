@@ -34,29 +34,33 @@ export default function Options() {
             action : "getUrl"
         })
 
-        chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+        chrome.runtime.onMessage.addListener( (msg={}, sender) => {
             if(msg.action === "sendUrl") {
+                    console.log("same");
+                    setUrlList(msg.obj);
                 
-                setUrlList(msg.obj);
-                if(urlList[url]) {
-                   setBlocked(true);
-                } 
+                
+                 
                 
             }
 
             if(msg.action === "addUrl") {
+                console.log("url added");
                 setAddedUrl(msg.added);
+            }
+
+            if(msg.action === "removeUrl") {
+                console.log("url removed");
+                setAddedUrl(msg.url);
             }
         })
 
-       if(url === extensionID) {
-        setBlocked(true);
-       }
+      
 
         
 
         
-    },[addedUrl]);
+    });
     //chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
     //    if(msg.status) {
     //        setBlock(msg.status);
