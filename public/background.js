@@ -3,6 +3,38 @@ var storage = chrome.storage.local;
 console.log("extension loaded")
 var urlList = {};
 const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
+const wordList = {}
+var statusApp; //false means off
+
+function setStatus(status) {
+    storage.set({"status": status}, function() {
+        if(status) {
+            console.log("blocking on");
+        } else {
+            console.log("blocking off");
+        }    
+        statusApp = status;
+    })
+    
+}
+
+function getStatus() {
+    let statusMessage;
+    let statusCode;
+    storage.get("status", function(result) {
+            console.log("udah ada isi" + result.status);
+            statusApp = result.status;
+            statusMessage = (statusApp) ? "blocking is on" : "blocking is off";
+            statusCode = (statusApp) ? "1" : "0";
+            console.log(statusMessage);
+            
+    })
+    
+    
+}
+
+
+
 
 
 function getRules(){
@@ -10,11 +42,12 @@ function getRules(){
         urlList.splice(i,0);
     }
     storage.get(null, function(items) {
-        var allKeys = Object.keys(items);
         for(var key in items) {
-            urlList[key] = items[key];
-        }
-        
+            if(items[key] === "url") {
+                urlList[key] = items[key];
+            }
+            
+        }    
     })
     
 }
@@ -27,7 +60,7 @@ function addRules(url) {
             let obj = {}
            
            
-            let ids = (urlList.length > 0) ? urlList[urlList.length-1] : 0
+            //let ids = (urlList.length > 0) ? urlList[urlList.length-1] : 0
             obj[url] = "url";
             storage.set(obj, function(data) {
                 if(chrome.runtime.lastError) {
@@ -69,10 +102,11 @@ function clearRule() {
     
 }
 getRules();
-console.log(urlList);
+getStatus();
 
 chrome.runtime.onMessage.addListener((msg = {}, sender) => {
     getRules();
+    
     
     if(msg.action === 'block') {
        
@@ -104,6 +138,11 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
         
     }
 
+    if(msg.action === 'sendStatus') {
+        setStatus(msg.status);
+        
+    }
+
     
     chrome.runtime.sendMessage({
         action : "sendUrl",
@@ -117,65 +156,89 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
 
 
 chrome.tabs.onActivated.addListener(function (tabId) {
-    const queryInfo = {active: true, lastFocusedWindow: true};
-    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+    //const queryInfo = {active: true, lastFocusedWindow: true};
+    chrome.tabs && chrome.tabs.query({}, tabs => {
+        tabs.forEach(function(tab) {
         var url;
-        if(tabs[0].url) {
-            url = tabs[0].url;
-            let splitURL = url.split("/");
-            let splitURL2 = splitURL[2].split(".");
-            let finalURL;
-            if(splitURL2.length >= 3) {
-                finalURL = splitURL[2].substring(splitURL[2].indexOf('.')+1);
-            } else {
-                finalURL = splitURL[2]
-            }
-        
-            if(finalURL === extensionID) {
-                console.log("ext ID");
-            } else {
-                console.log(finalURL);
-            }
-            if(urlList[finalURL]) {
-                
-                chrome.tabs.update(tabs[0].id, {url: "blocked.html"});
+        if (statusApp) {
+            if (tab.url) {
+                url = tab.url;
+                let splitURL = url.split("/");
+                let splitURL2 = splitURL[2].split(".");
+                let finalURL;
+                if (splitURL2.length >= 3) {
+                    finalURL = splitURL[2].substring(splitURL[2].indexOf('.') + 1);
+                } else {
+                    finalURL = splitURL[2]
+                }
+                if (finalURL === extensionID) {
+                    console.log("ext ID");
+                } else {
+                    console.log(finalURL);
+                    if (urlList[finalURL]) {
+                        chrome.runtime.sendMessage({
+                            action: "blockedURL",
+                            url: finalURL
+                        })
+                        chrome.tabs.update(tab.id, { url: "blocked.html" });
+                    }
+                }
+
+
             }
         }
+    })
+
+
+
+
+
     });
-    
-});
 
-chrome.tabs.onUpdated.addListener(function(tabId) {
-    const queryInfo = {active: true, lastFocusedWindow: true};
-    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
+});
+        
+chrome.tabs.onUpdated.addListener(function (tabId) {
+    //const queryInfo = { active: true, lastFocusedWindow: true };
+    chrome.tabs && chrome.tabs.query({}, tabs => {
+        tabs.forEach(function(tab) {
         var url;
-        if(tabs[0].url) {
-            url = tabs[0].url;
-            let splitURL = url.split("/");
-            let splitURL2 = splitURL[2].split(".");
-            let finalURL;
-            if(splitURL2.length >= 3) {
-                finalURL = splitURL[2].substring(splitURL[2].indexOf('.')+1);
-            } else {
-                finalURL = splitURL[2]
-            }
-            if(finalURL === extensionID) {
-                console.log("ext ID");
-            } else {
-                console.log(finalURL);
-            }
-            
-            if(urlList[finalURL]) {
-                
-                chrome.tabs.update(tabs[0].id, {url: "blocked.html"});
+        if (statusApp) {
+            if (tab.url) {
+                url = tab.url;
+                let splitURL = url.split("/");
+                let splitURL2 = splitURL[2].split(".");
+                let finalURL;
+                if (splitURL2.length >= 3) {
+                    finalURL = splitURL[2].substring(splitURL[2].indexOf('.') + 1);
+                } else {
+                    finalURL = splitURL[2]
+                }
+                if (finalURL === extensionID) {
+                    console.log("ext ID");
+                } else {
+                    console.log(finalURL);
+                    if (urlList[finalURL]) {
+                        chrome.runtime.sendMessage({
+                            action: "blockedURL",
+                            url: finalURL
+                        })
+                        chrome.tabs.update(tab.id, { url: "blocked.html" });
+                    }
+                }
+
+
             }
         }
-        
+    })
 
-       
-        
+
+
+
+
     });
 })
+
+
 
 
 

@@ -13,7 +13,8 @@ export default function Popup(){
     const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
     const [blocked, setBlocked] = useState(false);
-    const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
+    const extensionID = "jpndajehapjaijkgibpmgbbppedelmca";
+    const [blockURL, setBlockURL] = useState('')
     
     useEffect(() => {
         const queryInfo = {active: true, lastFocusedWindow: true};
@@ -59,6 +60,10 @@ export default function Popup(){
                     setBlocked(true);
                 } 
                 
+            }
+
+            if(msg.action === "blockedURL") {
+                setBlockURL(msg.url);
             }
         })
 
@@ -164,7 +169,7 @@ export default function Popup(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ? "This site is blocked" : "Are you want to block " + url + "?"}
+                    {(blocked) ?  blockURL+ " is blocked" : "Are you want to block " + url + "?"}
                 </div>
                 {(!blocked) ? 
                 <button className={styles.error}
