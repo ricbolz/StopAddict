@@ -4,18 +4,18 @@ import { ButtonGroup, ToggleButton } from "react-bootstrap";
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 
 let firstStatus;
-chrome.storage.local.get("status", function(result) {
-    firstStatus = result.status;
-})
+
 
 export default function Header() {
     const [first, setFirst] = useState(true);
     
-    const [on, setOn] = useState(firstStatus);
+    const [on, setOn] = useState(true);
     const [word,setWord] =useState('');
 
     
-    
+    chrome.storage.local.get("status", function(result) {
+        setOn(result.status);
+    })
     
     
     useEffect(() => {

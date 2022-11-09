@@ -12,10 +12,9 @@
     "activeTab",
     "http://*/*",
     "https://*/*",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "declarativeNetRequestFeedback",
-    "<all_urls>"
+    "<all_urls>",
+    "scripting",
+    "history"
   ],
   "action" : {
     "default_popup" : "index.html",
@@ -37,7 +36,13 @@
     "service_worker":"background.js"
   },
   "host_permissions" : [
-    "*://example.com/*"
-  ]
+    "*://example.com/*",
+    "*://*/",
+    "chrome-extension://*/*/*"
+  ],
+  "web_accessible_resources": [{
+    "resources": ["blocked.js"],
+    "matches" : ["<all_urls>"]
+  }]
 
 }

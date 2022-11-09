@@ -1,8 +1,8 @@
 /*global chrome */
 import styles from '../../styles/Background.module.css';
 import React, { useEffect, useState } from 'react';
-import Navbar from '../navbar';
-import List from './list';
+
+
 
 
 
@@ -24,12 +24,19 @@ export default function Popup(){
             if(tabs[0].url) {
                 url = tabs[0].url;
                 let splitURL = url.split("/");
-                let splitURL2 = splitURL[2].split(".");
+                let firstUrl = splitURL[2];
+                
+                let splitURL2 = firstUrl.split(".");
                 let finalURL;
                 if(splitURL2.length >= 3) {
-                    finalURL = splitURL[2].substring(splitURL[2].indexOf('.')+1);
+                    if (splitURL[2].includes("www.")) {
+                        finalURL = firstUrl.substring(firstUrl.indexOf('.')+1);
+                        
+                    } else {
+                        finalURL =firstUrl;
+                    }
                 } else {
-                    finalURL = splitURL[2]
+                    finalURL = firstUrl;
                 }
             
                 if(finalURL === extensionID) {
@@ -169,7 +176,7 @@ export default function Popup(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  blockURL+ " is blocked" : "Are you want to block " + url + "?"}
+                    {(blocked) ?  blockURL+ " is blocked" : (url === "newtab") ? "" :"Are you want to block " + url + "?"}
                 </div>
                 {(!blocked) ? 
                 <button className={styles.error}

@@ -5,6 +5,7 @@ import Options from "./Options";
 import React, { useEffect, useState } from 'react';
 import Popup from "./popup/popup";
 import Header from './Header';
+import WordList from './wordList';
 
 export default function Home() {
     return(
@@ -20,8 +21,11 @@ export default function Home() {
                 <Tab eventKey="Main" title="Main">
                     <Popup/>
                 </Tab>
-                <Tab eventKey="Options" title="Options">
+                <Tab eventKey="Options" title="URL">
                     <Options/>
+                </Tab>
+                <Tab eventKey="Word" title="Word">
+                    <WordList/>
                 </Tab>
             </Tabs>
         </div>

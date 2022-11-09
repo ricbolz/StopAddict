@@ -3,12 +3,15 @@ import styles from "../styles/Background.module.css"
 import React, { useEffect, useState } from 'react';
 
 import List from "./popup/list";
+import { Form } from "react-bootstrap";
+import { TextField } from "@mui/material";
 export default function Options() {
     const [url, setUrl] = useState('');
-    const [url2, setUrl2] = useState('');
+    const [error,setError] = useState(false);
+    const [errorText, setErrorText] = useState('');
     //const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
-    const [blocked, setBlocked] = useState(false);
+ 
     const [addedUrl, setAddedUrl] = useState('');
     const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
     
@@ -34,7 +37,7 @@ export default function Options() {
             action : "getUrl"
         })
 
-        chrome.runtime.onMessage.addListener( (msg={}, sender) => {
+        chrome.runtime.onMessage.addListener( async (msg={}, sender) => {
             if(msg.action === "sendUrl") {
                     console.log("same");
                     setUrlList(msg.obj);
@@ -44,15 +47,15 @@ export default function Options() {
                 
             }
 
-            if(msg.action === "addUrl") {
-                console.log("url added");
-                setAddedUrl(msg.added);
-            }
+            // if(msg.action === "addUrl") {
+            //     console.log("url added");
+            //     setAddedUrl(msg.added);
+            // }
 
-            if(msg.action === "removeUrl") {
-                console.log("url removed");
-                setAddedUrl(msg.url);
-            }
+            // if(msg.action === "removeUrl") {
+            //     console.log("url removed");
+            //     setAddedUrl(msg.url);
+            // }
         })
 
       
@@ -70,13 +73,58 @@ export default function Options() {
        
     
     
+    const handleChange = (event) => {
+        if(setError) {
+            setError(false);
+        }
+        setUrl(event.target.value);
+    }
+
+    const validateUrl = (data) => {
+        const regex = new RegExp(/[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
+        let isUrl = false
+        if(regex.test(data)) {
+            console.log(data + 'is added')
+            isUrl = true;
+        }
+        return isUrl;
+    }
     
-   
+    const handleSubmit = () => {
+        setUrl(url.trim());
+        setError(true);
+        if(validateUrl(url)) {
+            urlList[url] = "url";
+            chrome.runtime.sendMessage({
+                action: "block",
+                url:url
+            })
+            setUrl('');
+            setErrorText("URL added: " + url);
+        } else {
+            
+            setErrorText("It is Not an URL, Try it With Another URL");
+        }
+        
+        
+    }
     
 
   
     return(
         <div className={styles.page}>
+            <div>
+                <TextField
+                label="URL"
+                value={url}
+                onChange={handleChange}
+                onKeyUp={(event) => {
+                    if (event.key == 'Enter') {
+                        handleSubmit();
+                    }
+                }}/>
+                {error ? <div>{errorText}</div> : ""}
+            </div>
                 <div>
                 {Object.keys(urlList).map((keyName, i) => (
                     <div>
