@@ -33,9 +33,9 @@ export default function WordList(){
 
         
 
-        // chrome.runtime.sendMessage({
-        //     action : "getWord"
-        // })
+         chrome.runtime.sendMessage({
+             action : "getWord"
+         })
 
         chrome.runtime.onMessage.addListener( (msg={}, sender) => {
             if(msg.action === "sendWord") {

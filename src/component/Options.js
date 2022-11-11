@@ -45,6 +45,8 @@ export default function Options() {
                 
                  
                 
+            } else {
+                
             }
 
             // if(msg.action === "addUrl") {

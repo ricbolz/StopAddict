@@ -142,9 +142,9 @@ function deleteUrlHistory(url) {
 
 function redirectPage(tabId, url) {
     
-    chrome.tabs.create({url: "blocked.html?url="+url, active: true});
-    
-    chrome.tabs.remove(tabId);
+    //chrome.tabs.create({url: "blocked.html?url="+url, active: true});
+    chrome.tabs.update(tabId, { url: "blocked.html?url="+url });
+    //chrome.tabs.remove(tabId);
     
 
     
@@ -152,41 +152,50 @@ function redirectPage(tabId, url) {
 
 function checkURL(urls,tabId) {
     url = urls;
-                let splitURL = url.split("/");
-                let firstUrl = splitURL[2];
-                let splitURL2 = firstUrl.split(".");
-                let finalURL;
-                if(splitURL2.length >= 3) {
-                    if (!splitURL[2].includes("www.")) {
-                        finalURL = firstUrl.substring(firstUrl.indexOf('.')+1);
-                        if(!urlList[finalURL]) {
-                            finalURL = firstUrl;
-                        }
+    let splitURL = url.split("/");
+    let firstUrl = splitURL[2];
+    let splitURL2 = firstUrl.split(".");
+    let finalURL;
+    if (splitURL2.length >= 3) {
+        if (!splitURL[2].includes("www.")) {
+            finalURL = firstUrl.substring(firstUrl.indexOf('.') + 1);
+            if (!urlList[finalURL]) {
+                finalURL = firstUrl;
+            }
 
-                    } else {
-                        finalURL = firstUrl.substring(firstUrl.indexOf('.')+1);
-                    }
-                } else {
-                    finalURL = firstUrl;
-                }
-                if (finalURL === extensionID) {
-                    console.log("ext ID");
-                } else {
-                    
-                    if (urlList[finalURL]) {
-                        deleteUrlHistory(url);
-                        chrome.runtime.sendMessage({
-                            action: "blockedURL",
-                            url: finalURL
-                        })
-                        redirectPage(tabId,finalURL);
-                    }
-                }
+        } else {
+            finalURL = firstUrl.substring(firstUrl.indexOf('.') + 1);
+        }
+    } else {
+        finalURL = firstUrl;
+    }
+    if (finalURL === extensionID) {
+        console.log("ext ID");
+    } else {
+
+        if (urlList[finalURL]) {
+            deleteUrlHistory(url);
+            chrome.runtime.sendMessage({
+                action: "blockedURL",
+                url: finalURL
+            })
+            redirectPage(tabId, finalURL);
+        }
+    }
+}
+
+function formatURL(url) {
+    let splitURL = url.split("/");
+    let firstUrl = splitURL[2];
+    
+
+    return firstUrl;
 }
 
 function checkWord(text,url,tab) {
     let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html";
     let lowText = text.toLowerCase();
+    let formatted = formatURL(url);
     if(!url.startsWith(blockPage)) {
         for (var key in wordList) {
            
@@ -194,7 +203,7 @@ function checkWord(text,url,tab) {
             if(lowText.includes(key)) {
                 
                 
-                chrome.tabs.update(tab, { url: "blocked.html?word="+key });
+                chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });
                 
                 
                 break;
@@ -236,32 +245,36 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
         
     }
 
-    if(msg.action === "clear") {
+    else if(msg.action === "clear") {
         clearRule();
         chrome.runtime.sendMessage({
             status: msg.url+ " clear success"
         })
         
     }
-    if(msg.action === 'getUrl') {
+    else if(msg.action === 'getUrl') {
         
         //console.log(urlList);
         
+    } else if(msg.action === 'getWord') {
+
     }
 
-    if(msg.action === 'sendStatus') {
+    else if(msg.action === 'sendStatus') {
         setStatus(msg.status);
         
     }
 
-    if(msg.action === 'blockWord') {
+    else if(msg.action === 'blockWord') {
         deleteUrlHistory(msg.url);
         chrome.tabs.update(msg.tab, { url: "blocked.html" });
         
     }
 
-    if(msg.action === 'sendInformation') {
+    else if(msg.action === 'sendInformation') {
         checkWord(msg.text,msg.url,msg.tab);
+    }
+    else {
         
     }
     
@@ -275,63 +288,68 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
         obj : wordList
     })
 
+   
     
     
     
 })
 
 
-chrome.tabs.onActivated.addListener(function (tabId) {
-    //const queryInfo = {active: true, lastFocusedWindow: true};
-    chrome.tabs && chrome.tabs.query({}, tabs => {
-        tabs.forEach(function(tab) {
-        var url;
-        
-        if (statusApp) {
-            if (tab.url) {
-                let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html";
-                if(!tab.url.startsWith(blockPage)) {
-                    let blockedWord = false;
-                    chrome.scripting.executeScript({
-                        target: {tabId: tab.id},
-                        func : () => {
-                            chrome.runtime.sendMessage({
-                                action: 'sendInformation',
-                                tab: window.tabId,
-                                url : window.location.href,
-                                text : document.body.innerText
-                            })
+// chrome.tabs.onActivated.addListener(function (tabId) {
+//     //const queryInfo = {active: true, lastFocusedWindow: true};
+//     chrome.tabs && chrome.tabs.query({}, tabs => {
+//         tabs.forEach(function(tab) {
+//         var url;
+//         if(tab.url?.startsWith("chrome://")) return undefined;
+//         if(tab.url?.startsWith("chrome-extension://")) return undefined;
+//         if (statusApp) {
+//             if (tab.url) {
+//                 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html";
+//                 if(!tab.url.startsWith(blockPage)) {
+//                     let blockedWord = false;
+//                     chrome.scripting.executeScript({
+//                         target: {tabId: tab.id},
+//                         func : () => {
+//                             chrome.runtime.sendMessage({
+//                                 action: 'sendInformation',
+//                                 tab: window.tabId,
+//                                 url : window.location.href,
+//                                 text : document.body.innerText
+//                             })
                            
                            
                            
                             
                             
-                        }
+//                         }
             
                     
-                })
-                checkURL(tab.url, tab.id);
+//                 })
+//                 console.log("one time");
+//                 checkURL(tab.url, tab.id);
                 
                 
-            } 
-        }
-        }
-    })
+//             } 
+//         }
+//         }
+//     })
     
 
 
 
 
 
-    });
+//     });
 
-});
+// });
         
 chrome.tabs.onUpdated.addListener(function (tabId) {
     //const queryInfo = { active: true, lastFocusedWindow: true };
     chrome.tabs && chrome.tabs.query({}, tabs => {
         tabs.forEach(function(tab) {
         var url;
+        if(tab.url?.startsWith("chrome://")) return undefined;
+        if(tab.url?.startsWith("chrome-extension://")) return undefined;
         if (statusApp) {
             if (tab.url) {
                 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
@@ -348,24 +366,7 @@ chrome.tabs.onUpdated.addListener(function (tabId) {
                                 text : document.body.innerText
                             })
 
-                            chrome.runtime.onMessage.addListener((msg={}, sender) => {
-                                if(msg.action === "sendReason") {
-                                    if(window.location.href.includes(blockPage)) {
-                                        let reason = msg.url || msg.word;
-                                        console.log(reason + "will blocked");
-                                        var root = document.getElementById('root');
-                                        //const queryString = window.location.search;
-                                        //const urlParams = new URLSearchParams(queryString);
-                                        //const url = urlParams.get("url")
-                                        document.title = reason + " blocked";
-                                        root.innerText = "blocked " + reason;
-                                        console.log("loaded");
-                                    }
-                                    
-                                }
-                                
-                            })
-
+                            
                             
                            
                             
@@ -374,6 +375,7 @@ chrome.tabs.onUpdated.addListener(function (tabId) {
             
                     
                 })
+                console.log("reloaded");
                 checkURL(tab.url, tab.id);
                 
                 

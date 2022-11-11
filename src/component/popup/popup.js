@@ -69,8 +69,10 @@ export default function Popup(){
                 
             }
 
-            if(msg.action === "blockedURL") {
+            else if(msg.action === "blockedURL") {
                 setBlockURL(msg.url);
+            } else {
+
             }
         })
 
@@ -80,12 +82,14 @@ export default function Popup(){
 
         
     }, [url]);
-    chrome.runtime.onMessage.addListener( (msg={}, sender) => {
-        if(msg.status) {
-            setBlock(msg.status);
-        }
+    // chrome.runtime.onMessage.addListener( (msg={}, sender) => {
+    //     if(msg.status) {
+    //         setBlock(msg.status);
+    //     } else {
+
+    //     }
         
-       });
+    //    });
        
     
     
@@ -101,23 +105,24 @@ export default function Popup(){
             url : url,     
         })  
         
-        chrome.runtime.sendMessage({
-            action: "addUrl",
-            added : url
-        })
+        
 
         chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
             if(msg.status) {
                 setBlock(msg.status);
+            } else {
+
             }
             
             
         })
 
 
-        chrome.tabs.update({
-            url: "blocked.html"
-       });
+    //     chrome.tabs.update({
+    //         url: "blocked.html?url="+url
+    //    });
+
+        chrome.tabs.reload();
         
        chrome.runtime.sendMessage({
         action : "getUrl"
@@ -137,6 +142,8 @@ export default function Popup(){
         if(msg.status) {
             setBlock(msg.status);
             setBlocked(false);
+        } else {
+
         }
         
        });
@@ -162,6 +169,8 @@ export default function Popup(){
         chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
             if(msg.status) {
                 setBlock(" " + msg.status);
+            } else {
+                
             }
             
            });
@@ -176,9 +185,9 @@ export default function Popup(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  blockURL+ " is blocked" : (url === "newtab") ? "" :"Are you want to block " + url + "?"}
+                    {(blocked) ?  blockURL+ " is blocked" : (url === "newtab") ? "This is a newtab" :"Are you want to block " + url + "?"}
                 </div>
-                {(!blocked) ? 
+                {(!blocked & (url !== "newtab")) ? 
                 <button className={styles.error}
                 onClick={() => {
                     addRule(url);
@@ -188,18 +197,8 @@ export default function Popup(){
                 <div style={{color: 'white'}}>Block this site</div>
             </button> : ''}
                 
-                <button
-                    onClick={() => {
-                        removeRule(url);
-                    }}
-                    >
-                    Open optios Page
-                </button>
-                <button
-                onClick={() => {
-                    clearRule();
-                }}>Clear all url</button>
-                <div>{block}</div>
+               
+                
                
             </div>
         </div>

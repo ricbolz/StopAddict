@@ -19,10 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var root = document.getElementById('root');
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
-            const url = urlParams.get("url") || urlParams.get("word");
-           
+            const url = urlParams.get("url") 
+            const word = urlParams.get("word");
             document.title = url + " blocked";
-            root.innerText = "blocked " + url;
+            if(word) {
+                root.innerText = "blocked " + word;
+            } else {
+                root.innerText = "blocked " +  url;
+            }
             window.history.pushState(null,"a","blocked.html");
             console.log("loaded");
 })
