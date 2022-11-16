@@ -2,18 +2,17 @@
 import styles from "../styles/Background.module.css"
 import React, { useEffect, useState } from 'react';
 
-import List from "./popup/list";
-import { Form } from "react-bootstrap";
+import List from "./list";
 import { TextField } from "@mui/material";
-export default function Options() {
+export default function UrlList() {
     const [url, setUrl] = useState('');
     const [error,setError] = useState(false);
     const [errorText, setErrorText] = useState('');
     //const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
  
-    const [addedUrl, setAddedUrl] = useState('');
-    const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
+    
+    
     
     useEffect(() => {
         // const queryInfo = {active: true, lastFocusedWindow: true};
@@ -79,7 +78,7 @@ export default function Options() {
         if(setError) {
             setError(false);
         }
-        setUrl(event.target.value);
+        setUrl(event.target.value.toLowerCase());
     }
 
     const validateUrl = (data) => {
@@ -94,6 +93,8 @@ export default function Options() {
     
     const handleSubmit = () => {
         setUrl(url.trim());
+        setUrl(url.toLowerCase());
+        console.log(url);
         setError(true);
         if(validateUrl(url)) {
             urlList[url] = "url";
@@ -121,7 +122,7 @@ export default function Options() {
                 value={url}
                 onChange={handleChange}
                 onKeyUp={(event) => {
-                    if (event.key == 'Enter') {
+                    if (event.key === 'Enter') {
                         handleSubmit();
                     }
                 }}/>

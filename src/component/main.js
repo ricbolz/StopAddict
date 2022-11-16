@@ -1,16 +1,11 @@
 /*global chrome */
-import styles from '../../styles/Background.module.css';
+import styles from '../styles/Background.module.css';
 import React, { useEffect, useState } from 'react';
 
-
-
-
-
-
-export default function Popup(){
+export default function Main(){
 
     const [url, setUrl] = useState('');
-    const [block, setBlock] = useState('');
+    // const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
     const [blocked, setBlocked] = useState(false);
     const extensionID = "jpndajehapjaijkgibpmgbbppedelmca";
@@ -91,12 +86,6 @@ export default function Popup(){
         
     //    });
        
-    
-    
-    
-    function getRule(){
-        
-    }
     function addRule(url) {
         
         
@@ -107,15 +96,15 @@ export default function Popup(){
         
         
 
-        chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
-            if(msg.status) {
-                setBlock(msg.status);
-            } else {
+        // chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+        //     if(msg.status) {
+        //         setBlock(msg.status);
+        //     } else {
 
-            }
+        //     }
             
             
-        })
+        // })
 
 
     //     chrome.tabs.update({
@@ -132,50 +121,50 @@ export default function Popup(){
         
     }
 
-    function removeRule(url) {
-       chrome.runtime.sendMessage({
-        action: 'remove',
-        url: url
-       });
+    // function removeRule(url) {
+    //    chrome.runtime.sendMessage({
+    //     action: 'remove',
+    //     url: url
+    //    });
 
-       chrome.runtime.onMessage.addListener( (msg={}, sender) => {
-        if(msg.status) {
-            setBlock(msg.status);
-            setBlocked(false);
-        } else {
+    //    chrome.runtime.onMessage.addListener( (msg={}, sender) => {
+    //     if(msg.status) {
+    //         setBlock(msg.status);
+    //         setBlocked(false);
+    //     } else {
 
-        }
+    //     }
         
-       });
+    //    });
 
        
 
-       chrome.tabs.update({
-            url: "https://"+url
-       });
+    //    chrome.tabs.update({
+    //         url: "https://"+url
+    //    });
 
-       chrome.runtime.sendMessage({
-        action : "getUrl"
-    })
+    //    chrome.runtime.sendMessage({
+    //     action : "getUrl"
+    // })
 
        
-    }
+    // }
 
-    function clearRule() {
-        chrome.runtime.sendMessage({
-            action: 'clear',
-        })
+    // function clearRule() {
+    //     chrome.runtime.sendMessage({
+    //         action: 'clear',
+    //     })
 
-        chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
-            if(msg.status) {
-                setBlock(" " + msg.status);
-            } else {
+    //     chrome.runtime.onMessage.addListener(async (msg={}, sender) => {
+    //         if(msg.status) {
+    //             setBlock(" " + msg.status);
+    //         } else {
                 
-            }
+    //         }
             
-           });
+    //        });
 
-    }
+    // }
 
   
     return(
@@ -185,9 +174,9 @@ export default function Popup(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  blockURL+ " is blocked" : (url === "newtab") ? "This is a newtab" :"Are you want to block " + url + "?"}
+                    {(blocked) ?  "This page is blocked" : (url.split('.').length < 2) ? "Not a site" :"Are you want to block " + url + "?"}
                 </div>
-                {(!blocked & (url !== "newtab")) ? 
+                {(!blocked & (url.split('.').length > 1)) ? 
                 <button className={styles.error}
                 onClick={() => {
                     addRule(url);

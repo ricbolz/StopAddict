@@ -1,3 +1,7 @@
+function returnBack(){
+    window.history.go(-3);
+    
+}
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -15,18 +19,27 @@ document.addEventListener('DOMContentLoaded', function() {
     //     }
         
     // })
+
     
             var root = document.getElementById('root');
+            var reason = document.getElementById('reason');
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const url = urlParams.get("url") 
             const word = urlParams.get("word");
-            document.title = url + " blocked";
+            //document.title = url + " blocked";
             if(word) {
-                root.innerText = "blocked " + word;
+                root.innerText = "blocked website : " + url;
+                reason.innerText = `blocked reason: it is contain restricted word "` + word + `"`;
+
+            } else if(url){
+                root.innerText = "blocked website : " +  url;
+                reason.innerText = `blocked reason: accessed blocked url "` + url +`"`;
             } else {
-                root.innerText = "blocked " +  url;
+                root.innerText = "You are accessing the Block page"
             }
             window.history.pushState(null,"a","blocked.html");
             console.log("loaded");
+            // var ret = document.getElementById('return');
+            // ret.addEventListener('click',returnBack,false);
 })

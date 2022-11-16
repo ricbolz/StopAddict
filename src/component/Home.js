@@ -1,9 +1,9 @@
-/*global chrome */
+
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Options from "./Options";
-import React, { useEffect, useState } from 'react';
-import Popup from "./popup/popup";
+import UrlList from "./urlList";
+import React from 'react';
+import Main from "./main";
 import Header from './Header';
 import WordList from './wordList';
 
@@ -19,10 +19,10 @@ export default function Home() {
                 unmountOnExit={true}
             >
                 <Tab eventKey="Main" title="Main">
-                    <Popup/>
+                    <Main/>
                 </Tab>
-                <Tab eventKey="Options" title="URL">
-                    <Options/>
+                <Tab eventKey="UrlList" title="URL">
+                    <UrlList/>
                 </Tab>
                 <Tab eventKey="Word" title="Word">
                     <WordList/>

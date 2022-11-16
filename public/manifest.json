@@ -2,8 +2,8 @@
   "name": "StopAddict",
   "start_url": ".",
   "manifest_version": 3,
-  "version" : "0.1",
-  "description": "Stop Addict",
+  "version" : "0.0.0.1",
+  "description": "Block site by the URL and Word",
   "author" : "Hendrico Vernando Bolang",
   "permissions": [
     "storage",

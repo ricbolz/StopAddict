@@ -1,5 +1,5 @@
 /*global chrome */
-import styles from '../../styles/Background.module.css';
+import styles from '../styles/Background.module.css';
 export default function List(props){
     function removeRule(url) {
         chrome.runtime.sendMessage({

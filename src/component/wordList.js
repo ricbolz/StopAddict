@@ -1,19 +1,16 @@
 /*global chrome */
 import styles from "../styles/Background.module.css"
 import React, { useEffect, useState } from 'react';
-
-import List from "./popup/list";
-import { Form } from "react-bootstrap";
+import List from "./list";
 import { TextField } from "@mui/material";
 
 export default function WordList(){
     const [word, setWord] = useState('');
     const [error,setError] = useState(false);
+    const [errorWarning, setErrorWarning] = useState('');
     //const [block, setBlock] = useState('');
     const [wordList, setWordList] = useState({});
-    const [blocked, setBlocked] = useState(false);
-    const [addedWord, setAddedWord] = useState('');
-    const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
+    
     
     useEffect(() => {
         // const queryInfo = {active: true, lastFocusedWindow: true};
@@ -78,6 +75,7 @@ export default function WordList(){
             setError(false);
         }
         setWord(event.target.value);
+        
     }
 
     const validateWord = (data) => {
@@ -87,7 +85,10 @@ export default function WordList(){
             let text = data.trim();
             if(text.length < 3) {
                 isNotWord = true;
+                setErrorWarning("Please input 3 or more characters");
             }
+        } else {
+            setErrorWarning("Not a word");
         }
         
         return isNotWord;
@@ -119,11 +120,11 @@ export default function WordList(){
                 value={word}
                 onChange={handleChange}
                 onKeyUp={(event) => {
-                    if (event.key == 'Enter') {
+                    if (event.key === 'Enter') {
                         handleSubmit();
                     }
                 }}/>
-                {error ? <div>It is not Word</div> : ""}
+                {error ? <div>{errorWarning}</div> : ""}
             </div>
                 <div>
                 {Object.keys(wordList).map((keyName, i) => (

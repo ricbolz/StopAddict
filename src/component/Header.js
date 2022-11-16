@@ -1,13 +1,12 @@
 /*global chrome */
 import { useEffect, useState } from "react";
-import { ButtonGroup, ToggleButton } from "react-bootstrap";
+
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 
-let firstStatus;
+
 
 
 export default function Header() {
-    const [first, setFirst] = useState(true);
     
     const [on, setOn] = useState(true);
     const [word,setWord] =useState('');

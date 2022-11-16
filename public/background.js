@@ -137,13 +137,13 @@ function clearRule() {
 
 function deleteUrlHistory(url) {
     chrome.history.deleteUrl({url : url});
-    console.log("delete url : " + url);
+    console.log("block + delete url : " + url);
 }
 
 function redirectPage(tabId, url) {
     
     //chrome.tabs.create({url: "blocked.html?url="+url, active: true});
-    chrome.tabs.update(tabId, { url: "blocked.html?url="+url });
+    chrome.tabs.update(tabId, { url: "blocked.html?url="+url});
     //chrome.tabs.remove(tabId);
     
 
