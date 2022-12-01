@@ -174,7 +174,7 @@ export default function Main(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  "This page is blocked" : (url.split('.').length < 2) ? "Not a site" :"Are you want to block " + url + "?"}
+                    {(blocked) ?  "This page is blocked" : (url.split('.').length < 2) ? "Can't block this page" :"Are you want to block " + url + "?"}
                 </div>
                 {(!blocked & (url.split('.').length > 1)) ? 
                 <button className={styles.error}

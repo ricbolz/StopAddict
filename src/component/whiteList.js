@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 
 import List from "./list";
 import { TextField } from "@mui/material";
-export default function UrlList() {
+export default function WhiteList() {
     const [url, setUrl] = useState('');
     const [error,setError] = useState(false);
     const [errorText, setErrorText] = useState('');
     //const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
- 
+    const [whiteList, setWhiteList] = useState({})
     
     
     
@@ -36,15 +36,22 @@ export default function UrlList() {
             action : "getUrl"
         })
 
+        chrome.runtime.sendMessage({
+            action : "getWhiteList"
+        })
+
         chrome.runtime.onMessage.addListener( async (msg={}, sender) => {
             if(msg.action === "sendUrl") {
-                    console.log("same");
+                    console.log("can't add");
                     setUrlList(msg.obj);
                 
                 
                  
                 
-            } else {
+            } if(msg.action === "sendWhiteList"){
+                setWhiteList(msg.obj);
+            }
+             else {
                 
             }
 
@@ -98,17 +105,22 @@ export default function UrlList() {
         setError(true);
         if(validateUrl(url)) {
             if(urlList[url]) {
-                setErrorText(`"${url}" is already added`);
+                setErrorText("Please delete the url from blocked site first");
             } else {
-            urlList[url] = "url";
-            chrome.runtime.sendMessage({
-                action: "addRule",
-                type: "block",
-                url:url
-            })
-            setUrl('');
-            setErrorText("URL added: " + url);
-        }
+                if(!whiteList[url]) {
+            
+                    whiteList[url] = "white";
+                    chrome.runtime.sendMessage({
+                        action: "addRule",
+                        type: "white",
+                        url:url
+                    })
+                    setUrl('');
+                    setErrorText("Whitelist URL added: " + url);
+                } else {
+                    setErrorText(`"${url}" is already added to whitelist`);
+                }
+            }
         } else {
             
             setErrorText("It is Not an URL, Try it With Another URL");
@@ -121,6 +133,7 @@ export default function UrlList() {
   
     return(
         <div className={styles.page}>
+            <div>If you wish to access the website even it has restricted words you can fill it in here</div>
             <div>
                 <TextField
                 label="URL"
@@ -134,9 +147,9 @@ export default function UrlList() {
                 {error ? <div>{errorText}</div> : ""}
             </div>
                 <div>
-                {Object.keys(urlList).map((keyName, i) => (
+                {Object.keys(whiteList).map((keyName, i) => (
                     <div>
-                        <List id={urlList[keyName]} url={keyName}/>
+                        <List id={whiteList[keyName]} url={keyName}/>
                     </div>
                 ))}
                 </div>

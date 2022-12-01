@@ -87,9 +87,16 @@ export default function WordList(){
                 isNotWord = true;
                 setErrorWarning("Please input 3 or more characters");
             }
+            if(wordList[data]) {
+                isNotWord = true;
+                setErrorWarning(`"${data}" is already added`);
+            }
+            
         } else {
             setErrorWarning("Not a word");
         }
+
+
         
         return isNotWord;
     }
@@ -97,12 +104,15 @@ export default function WordList(){
     const handleSubmit = () => {
         setWord(word.trim());
         if(!validateWord(word)) {
+             
             wordList[word] = "word";
             chrome.runtime.sendMessage({
-                action: "block",
+                action: "addRule",
+                type: "block",
                 word:word
             })
             setWord('');
+        
         } else {
             setError("true");
         }

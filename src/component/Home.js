@@ -6,6 +6,7 @@ import React from 'react';
 import Main from "./main";
 import Header from './Header';
 import WordList from './wordList';
+import WhiteList from './whiteList';
 
 export default function Home() {
     return(
@@ -26,6 +27,9 @@ export default function Home() {
                 </Tab>
                 <Tab eventKey="Word" title="Word">
                     <WordList/>
+                </Tab>
+                <Tab eventKey="WhiteList" title="White List">
+                    <WhiteList/>
                 </Tab>
             </Tabs>
         </div>

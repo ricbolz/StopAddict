@@ -3,13 +3,14 @@ var storage = chrome.storage.local;
 console.log("extension loaded")
 var urlList = {};
 const extensionID = "jpndajehapjaijkgibpmgbbppedelmca"
-var wordList = {}
+var wordList = {};
+var whiteList = {};
 let blockNow;
 var statusApp; //false means off
 
 
 function setStatus(status) {
-    storage.set({"status": status}, function() {
+    storage.set({"st": status}, function() {
         if(status) {
             console.log("blocking on");
         } else {
@@ -23,9 +24,8 @@ function setStatus(status) {
 function getStatus() {
     let statusMessage;
     let statusCode;
-    storage.get("status", function(result) {
-            console.log("udah ada isi" + result.status);
-            statusApp = result.status;
+    storage.get("st", function(result) {
+            statusApp = result.st;
             statusMessage = (statusApp) ? "blocking is on" : "blocking is off";
             statusCode = (statusApp) ? "1" : "0";
             console.log(statusMessage);
@@ -51,6 +51,9 @@ function getRules(){
             if(items[key] === "word") {
                 wordList[key] = items[key];
             }
+            if(items[key] === "white"){
+                whiteList[key] = items[key];
+            }
             
         }    
     })
@@ -58,61 +61,55 @@ function getRules(){
 }
 
 
-function addRules(url) {
+function addRules(rule,type) {
 
-    storage.get(url, function(value) {
+    storage.get(rule, function(value) {
         if(!value.key) {
             let obj = {}
            
-           
+           console.log(type);
             //let ids = (urlList.length > 0) ? urlList[urlList.length-1] : 0
-            obj[url] = "url";
+            obj[rule] = type;
             storage.set(obj, function(data) {
                 if(chrome.runtime.lastError) {
                     console.log(chrome.runtime.lastError.message);
                     return;
                 }
             })
-            urlList[url] = "url";
+            if(type==="url") {
+                urlList[rule] = type;
+            }else if(type === "word") {
+                wordList[rule] = type;
+            } else if(type === "white") {
+                whiteList[rule] = type;
+            }
         }
         else {
-            console.log("already blocked");
+            if(type === "white") {
+
+            }
+            console.log("already added as a " + value );
         }
     })  
 
 }
 
-function addWord(word) {
-    storage.get(word, function(value) {
-        if(!value.key) {
-            let obj = {}
-           
-           
-            //let ids = (urlList.length > 0) ? urlList[urlList.length-1] : 0
-            obj[word] = "word";
-            storage.set(obj, function(data) {
-                if(chrome.runtime.lastError) {
-                    console.log(chrome.runtime.lastError.message);
-                    return;
-                }
-            })
-            wordList[word] = "word";
-        }
-        else {
-            console.log("already blocked");
-        }
-    })  
-}
 
-function removeURL(url) {
-    storage.remove(url, function() {
-        if(urlList[url]) {
-            delete urlList[url];
-            console.log("deleted url: " + url);
+
+
+function removeRule(rule) {
+    storage.remove(rule, function() {
+        if(urlList[rule]) {
+            delete urlList[rule];
+            console.log("deleted url: " + rule);
         }
-        if(wordList[url]) {
-            delete wordList[url];
-            console.log("deleted word: " + url);
+        if(wordList[rule]) {
+            delete wordList[rule];
+            console.log("deleted word: " + rule);
+        }
+        if(whiteList[rule]) {
+            delete whiteList[rule];
+            console.log("delete whitelist url: " + rule);
         }
         
         
@@ -197,21 +194,28 @@ function checkWord(text,url,tab) {
     let lowText = text.toLowerCase();
     let formatted = formatURL(url);
     if(!url.startsWith(blockPage)) {
-        for (var key in wordList) {
-           
+        if(!whiteList[formatted]) {
+            for (var key in wordList) {
             
-            if(lowText.includes(key)) {
                 
-                
-                chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });
-                
-                
-                break;
-            } 
+                if(lowText.includes(key)) {
+                    
+                    
+                    chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });
+                    
+                    
+                    break;
+                } 
+            }
         }
     }
     
 }
+
+
+
+
+
 
 getRules();
 getStatus();
@@ -223,12 +227,19 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
     getRules();
     
     
-    if(msg.action === 'block') {
+    if(msg.action === 'addRule') {
         if(msg.url) {
-            addRules(msg.url);
+            if(msg.type === "white") {
+                if(!urlList[msg.url]) {
+                    addRules(msg.url, msg.type);
+                }
+            } else {
+                addRules(msg.url, "url");
+            }
+            
         }
         if(msg.word) {
-            addWord(msg.word);
+            addRules(msg.word,"word");
         }
         
         chrome.runtime.sendMessage({
@@ -238,7 +249,7 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
     }
 
     if(msg.action === 'remove') {
-        removeURL(msg.url);
+        removeRule(msg.url);
         chrome.runtime.sendMessage({
             status: msg.url + " remove success"
         });
@@ -281,6 +292,11 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
     chrome.runtime.sendMessage({
         action : "sendUrl",
         obj : urlList
+    })
+
+    chrome.runtime.sendMessage({
+        action: "sendWhiteList",
+        obj : whiteList
     })
 
     chrome.runtime.sendMessage({
@@ -365,12 +381,7 @@ chrome.tabs.onUpdated.addListener(function (tabId) {
                                 url : window.location.href,
                                 text : document.body.innerText
                             })
-
-                            
-                            
-                           
-                            
-                            
+                          
                         }
             
                     
