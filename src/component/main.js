@@ -90,7 +90,8 @@ export default function Main(){
         
         
         chrome.runtime.sendMessage({
-            action: 'block',
+            action: 'addRule',
+            type: "block",
             url : url,     
         })  
         
