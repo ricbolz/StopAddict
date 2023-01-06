@@ -1,7 +1,7 @@
 /*global chrome */
 import styles from '../styles/Background.module.css';
 import React, { useEffect, useState } from 'react';
-
+import Timer from './Timer';
 export default function Main(){
 
     const [url, setUrl] = useState('');
@@ -191,6 +191,7 @@ export default function Main(){
                 
                
             </div>
+            
         </div>
     )
     

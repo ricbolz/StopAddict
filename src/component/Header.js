@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
+import Timer from "./Timer";
+import InputTime from "./timer/inputTime";
 
 
 
@@ -10,11 +12,17 @@ export default function Header() {
 
     const [on, setOn] = useState(true);
     const [word, setWord] = useState('');
+    const [deadline, setDeadline] = useState(new Date());
 
 
     chrome.storage.local.get("st", function(result) {
         console.log(result);
         setOn(result.st);
+    })
+    
+    chrome.storage.local.get("dl", function(result) {
+        setDeadline(new Date(result.dl));
+        console.log(result);
     })
 
 
@@ -43,6 +51,7 @@ export default function Header() {
 
         })
         setOn(!on);
+        
     }
 
 
@@ -64,7 +73,9 @@ export default function Header() {
                 </FormGroup>
 
             </div>
-
+            <InputTime/>
+            <Timer deadline={deadline}/>
+            
         </div>
     )
 }

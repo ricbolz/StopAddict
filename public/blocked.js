@@ -27,12 +27,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(queryString);
             const url = urlParams.get("url") 
             const word = urlParams.get("word");
+            const focus = urlParams.get("focus");
             //document.title = url + " blocked";
             if(word) {
                 root.innerText = "blocked website : " + url;
                 reason.innerText = `blocked reason: it is contain restricted word "` + word + `"`;
 
-            } else if(url){
+            } 
+            else if(focus){
+                root.innerText = "blocked all website in focus mode ";
+                reason.innerText = "Focus mode has activated";
+
+            }else if(url){
                 root.innerText = "blocked website : " +  url;
                 reason.innerText = `blocked reason: accessed blocked url "` + url +`"`;
             } else {
