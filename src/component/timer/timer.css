@@ -1,0 +1,19 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { 
+	-webkit-appearance: none;
+} 
+input {
+    margin: 3px;
+    text-align: center;
+    background-color: aquamarine;
+    padding: 3px;
+}
+
+button {
+    background-color: rgba(11,101,217,30);
+    width: 120px;
+    border-radius: 10px;
+    padding: 5px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: large;
+}

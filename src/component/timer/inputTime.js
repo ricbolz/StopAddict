@@ -1,6 +1,7 @@
 /*global chrome */
 import {useEffect, useState} from 'react';
 import Timer from '../Timer';
+import "./timer.css";
 
 
 export default function InputTime() {
@@ -33,12 +34,13 @@ export default function InputTime() {
         <div>
             <div>
                 <input type="number" id="hour" min={0} max={999} 
-                    onChange={(e) => setHour(e.target.value)} value={hour}/>
+                    onChange={(e) => setHour(e.target.value)} value={hour} placeholder={0}/>
                 <input 
                 type="number" 
                 id="minutes" 
                 max={60} 
                 min={0} 
+                placeholder={0}
                     onChange={(e) => {
                         if(e.target.value > 59) {
                             setMinute("59");
@@ -49,7 +51,7 @@ export default function InputTime() {
                     }}
                 value={minute}
                 />
-                <input type="number" id="seconds" max={60} min={0} 
+                <input type="number" id="seconds" max={60} min={0} placeholder={0}
                 onChange={(e) => {
                     if(e.target.value > 59) {
                         setSecond("59");
@@ -63,7 +65,7 @@ export default function InputTime() {
             onClick={setDeadline}>
                 set deadline
             </button>
-            <Timer deadline={deadline}/>
+            
             
             
         </div>

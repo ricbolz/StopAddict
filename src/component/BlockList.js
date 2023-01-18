@@ -7,27 +7,22 @@ import Main from "./main";
 import Header from './Header';
 import WordList from './wordList';
 import WhiteList from './whiteList';
-import BlockList from './BlockList';
 
-export default function Home() {
+export default function BlockList() {
     return(
         <div style={{justifyContent: 'center', textAlign: 'center'}}>
-            <Header/>
             <Tabs
-                defaultActiveKey="Main"
+                defaultActiveKey="UrlList"
                 className="mb-3"
                 justify
                 mountOnEnter={true}
                 unmountOnExit={true}
             >
-                <Tab eventKey="Main" title="Main">
-                    <Main/>
+                <Tab eventKey="UrlList" title="URL">
+                    <UrlList/>
                 </Tab>
-                <Tab eventKey="BlockList" title="Block List">
-                    <BlockList/>
-                </Tab>
-                <Tab eventKey="WhiteList" title="White List">
-                    <WhiteList/>
+                <Tab eventKey="Word" title="Word">
+                    <WordList/>
                 </Tab>
             </Tabs>
         </div>

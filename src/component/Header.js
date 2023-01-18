@@ -57,7 +57,8 @@ export default function Header() {
 
 
     return (
-        <div className="header" style={{ display: "flex", padding: 10 }}>
+        <div>
+            <div className="header" style={{ display: "flex", padding: 10 }}>
             <h1 style={{ flex: 1 }}>Stop Addict</h1>
             <div style={{ flex: 1 }}>
                 <FormGroup>
@@ -73,9 +74,12 @@ export default function Header() {
                 </FormGroup>
 
             </div>
-            <InputTime/>
+            
             <Timer deadline={deadline}/>
+            </div>
+            <InputTime/>
             
         </div>
+        
     )
 }

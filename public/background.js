@@ -35,14 +35,19 @@ function getStatus() {
     })
 
     storage.get("dl", function(result){
-        let diff = new Date() - new Date(result.dl);
-        if(diff > 0) {
+        let diff = new Date(result.dl) - new Date();
+        if(diff <= 0) {
             
             console.log("deadline is passed");
             focusStatus = false;
         } else {
             deadline = result.dl;
             focusStatus = true;
+            console.log(diff);
+            setTimeout(() => {
+                focusStatus = false;
+            },diff)
+            
         }
         console.log(focusStatus);
     })
@@ -203,18 +208,25 @@ function formatURL(url) {
     return firstUrl;
 }
 
-function checkWord(text,url,tab) {
+function checkWord(title,text,url,tab) {
     
     let lowText = text.toLowerCase();
+    let lowTitle = title.toLowerCase();
     let formatted = formatURL(url);
+    console.log(title);
     if(!url.startsWith(blockPage)) {
         if(!whiteList[formatted]) {
             for (var key in wordList) {
             
-                
+                if(lowTitle.includes(key)) {
+                    
+                    deleteUrlHistory(formatted);
+                    chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });                
+                    break;
+                }
                 if(lowText.includes(key)) {
-                    
-                    
+                    console.log(lowText);
+                    deleteUrlHistory(formatted);
                     chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });
                     
                     
@@ -227,13 +239,15 @@ function checkWord(text,url,tab) {
 }
 
 function startTimer(dl){
-    let diff = new Date(dl) - new Date().now;
+    let diff = new Date(dl) - new Date();
     focusStatus = true;
     console.log("focus: " + focusStatus);
+    console.log(diff);
     setTimeout(() => {
         focusStatus = false;
         console.log("focus: " + focusStatus);
     }, diff)
+    
 }
 
 
@@ -305,11 +319,10 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
     }
 
     else if(msg.action === 'sendInformation') {
-        checkWord(msg.text,msg.url,msg.tab);
+        checkWord(msg.title,msg.text,msg.url,msg.tab);
     }
     else if(msg.action === "startFocusTimer"){
         deadline = msg.deadline;
-        console.log(msg.deadline);
         storage.set({dl : deadline}, function() {
             
             console.log("show deadline" + new Date(deadline));
@@ -341,88 +354,90 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
 })
 
 
-chrome.tabs.onActivated.addListener(function (tabId, changeInfo, tab) {
-    if(tab.url?.startsWith("chrome://")) return undefined;
-        if(tab.url?.startsWith("chrome-extension://")) return undefined;
-        if(tab.url?.startsWith(blockPage)) return undefined;
-        if (statusApp) {
-            if(focusStatus) {
-                chrome.tabs.update(tab.id, { url: "blocked.html?focus=true" });
+// chrome.tabs.onActivated.addListener(function (tabId, changeInfo, tab) {
+//     if(tab.url?.startsWith("chrome://")) return undefined;
+//         if(tab.url?.startsWith("chrome-extension://")) return undefined;
+//         if(tab.url?.startsWith(blockPage)) return undefined;
+//         if (statusApp) {
+//             if(focusStatus) {
+//                 chrome.tabs.update(tab.id, { url: "blocked.html?focus=true" });
                 
-            }
-            else if (tab.url) {
-                let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
-                if(!tab.url.startsWith(blockPage)) {
-                    let blockedWord = false;
-                    chrome.scripting.executeScript({
-                        target: {tabId: tabId},
-                        func : () => {
-                            let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
-                            chrome.runtime.sendMessage({
-                                action: 'sendInformation',
-                                tab: window.tabId,
-                                url : window.location.href,
-                                text : document.body.innerText
-                            })
+//             }
+//             else if (tab.url) {
+//                 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
+//                 if(!tab.url.startsWith(blockPage)) {
+//                     let blockedWord = false;
+//                     chrome.scripting.executeScript({
+//                         target: {tabId: tabId},
+//                         func : () => {
+//                             let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
+//                             chrome.runtime.sendMessage({
+//                                 action: 'sendInformation',
+//                                 tab: window.tabId,
+//                                 url : window.location.href,
+//                                 title : document.title,
+//                                 text : document.body.innerText
+//                             })
                           
-                        }
+//                         }
             
                     
-                })
-                console.log("reloaded");
-                checkURL(tab.url, tab.id);
+//                 })
+//                 console.log("reloaded");
+//                 checkURL(tab.url, tab.id);
                 
                 
             
-        }
-        }
-    }
+//         }
+//         }
+//     }
 
-});
+// });
 
 
-chrome.tabs.onCreated.addListener(function (tab) {
-    console.log(tab.id);
-    if(tab.url?.startsWith("chrome://")) return undefined;
-        if(tab.url?.startsWith("chrome-extension://")) return undefined;
-        if(tab.url?.startsWith(blockPage)) return undefined;
-        if (statusApp) {
-            if(focusStatus) {
-                chrome.tabs.update(tab.id, { url: "blocked.html?focus=true" });
+// chrome.tabs.onCreated.addListener(function (tab) {
+    
+//     if(tab.url?.startsWith("chrome://")) return undefined;
+//         if(tab.url?.startsWith("chrome-extension://")) return undefined;
+//         if(tab.url?.startsWith(blockPage)) return undefined;
+//         if (statusApp) {
+//             if(focusStatus) {
+//                 chrome.tabs.update(tab.id, { url: "blocked.html?focus=true" });
                 
-            }
-            else if (tab.url) {
-                let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
-                if(!tab.url.startsWith(blockPage)) {
-                    let blockedWord = false;
-                    chrome.scripting.executeScript({
-                        target: {tabId: tab.id},
-                        func : () => {
-                            let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
-                            console.log(window.tabId);
-                            chrome.runtime.sendMessage({
-                                action: 'sendInformation',
-                                tab: window.tabId,
-                                url : window.location.href,
-                                text : document.body.innerText
-                            })
+//             }
+//             else if (tab.url) {
+//                 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
+//                 if(!tab.url.startsWith(blockPage)) {
+//                     let blockedWord = false;
+//                     chrome.scripting.executeScript({
+//                         target: {tabId: tab.id},
+//                         func : () => {
+//                             let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
+//                             console.log(window.tabId);
+//                             chrome.runtime.sendMessage({
+//                                 action: 'sendInformation',
+//                                 tab: window.tabId,
+//                                 url : window.location.href,
+//                                 title : document.title,
+                                
+//                                 text : document.body.innerText
+//                             })
                           
-                        }
-            
-                    
-                })
-                console.log("reloaded");
-                checkURL(tab.url, tab.id);
+//                         }
+
+//                 })
+//                 console.log("reloaded");
+//                 checkURL(tab.url, tab.id);
                 
                 
-            } 
-        }
-        }
-})
+//             } 
+//         }
+//         }
+// })
         
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-
+        
         if(tab.url?.startsWith("chrome://")) return undefined;
         if(tab.url?.startsWith("chrome-extension://")) return undefined;
         if(tab.url?.startsWith(blockPage)) return undefined;
@@ -443,6 +458,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                                 action: 'sendInformation',
                                 tab: window.tabId,
                                 url : window.location.href,
+                                title : document.title,
                                 text : document.body.innerText
                             })
                           
