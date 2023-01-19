@@ -1,10 +1,12 @@
 /*global chrome */
 import styles from "../styles/Background.module.css"
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import List from "./list";
 import { TextField } from "@mui/material";
+import { CurrentLangContext } from "./context/currentLang";
 export default function WhiteList() {
+    const {dict} = useContext(CurrentLangContext);
     const [url, setUrl] = useState('');
     const [error,setError] = useState(false);
     const [errorText, setErrorText] = useState('');
@@ -105,7 +107,7 @@ export default function WhiteList() {
         setError(true);
         if(validateUrl(url)) {
             if(urlList[url]) {
-                setErrorText("Please delete the url from blocked site first");
+                setErrorText(dict.WhiteList.url_add_error_block);
             } else {
                 if(!whiteList[url]) {
             
@@ -116,14 +118,14 @@ export default function WhiteList() {
                         url:url
                     })
                     setUrl('');
-                    setErrorText("Whitelist URL added: " + url);
+                    setErrorText( dict.WhiteList.url_add+" :" + url);
                 } else {
-                    setErrorText(`"${url}" is already added to whitelist`);
+                    setErrorText(`"${url}" ` + dict.WhiteList.url_added);
                 }
             }
         } else {
             
-            setErrorText("It is Not an URL, Try it With Another URL");
+            setErrorText(dict.WhiteList.url_add_error);
         }
         
         
@@ -133,7 +135,7 @@ export default function WhiteList() {
   
     return(
         <div className={styles.page}>
-            <div>If you wish to access the website even it has restricted words you can fill it in here</div>
+            <div>{dict.WhiteList.about}</div>
             <div>
                 <TextField
                 label="URL"

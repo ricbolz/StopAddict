@@ -1,10 +1,12 @@
 /*global chrome */
 import styles from "../styles/Background.module.css"
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import List from "./list";
 import { TextField } from "@mui/material";
+import { CurrentLangContext } from "./context/currentLang";
 
 export default function WordList(){
+    const {dict} = useContext(CurrentLangContext)
     const [word, setWord] = useState('');
     const [error,setError] = useState(false);
     const [errorWarning, setErrorWarning] = useState('');
@@ -85,15 +87,15 @@ export default function WordList(){
             let text = data.trim();
             if(text.length < 3) {
                 isNotWord = true;
-                setErrorWarning("Please input 3 or more characters");
+                setErrorWarning(dict.WordList.word_add_short);
             }
             if(wordList[data]) {
                 isNotWord = true;
-                setErrorWarning(`"${data}" is already added`);
+                setErrorWarning(`"${data}" ` + dict.WordList.word_added);
             }
             
         } else {
-            setErrorWarning("Not a word");
+            setErrorWarning(dict.WordList.word_add_error);
         }
 
 

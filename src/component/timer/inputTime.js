@@ -1,14 +1,19 @@
 /*global chrome */
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useContext} from 'react';
+import { CurrentLangContext } from '../context/currentLang';
 import Timer from '../Timer';
 import "./timer.css";
 
 
+
 export default function InputTime() {
+    const {dict} = useContext(CurrentLangContext)
     const [hour,setHour] = useState("0");
     const [minute, setMinute] = useState("0");
     const [seconds, setSecond] = useState("0");
     const [deadline, setDeadli] = useState(new Date().toLocaleString());
+    const [isPassed, setPassed] = useState(true);
+    
 
     function setDeadline(){
         const newHour = hour*3600*1000;
@@ -20,51 +25,90 @@ export default function InputTime() {
             action: "startFocusTimer",
             deadline : nowDate.toLocaleString()
         })
+        setPassed(false);
+    }
+
+    function resetDeadline() {
+        const now = new Date().toLocaleString();
+        chrome.runtime.sendMessage({
+            action: "startFocusTimer",
+            deadline : now
+        })
+        setPassed(true);
     }
 
 
     useEffect(() => {
         chrome.storage.local.get("dl", function(result) {
             //setDeadli(result.dl);
+            const now = new Date();
+            const nowDeadline = new Date(result.dl);
+            if(now < nowDeadline) {
+                setPassed(false);
+                setTimeout(() => {
+                    setPassed(true);
+                }, nowDeadline - now);
+            }
             
          })
     },[deadline])
 
     return(
         <div>
-            <div>
-                <input type="number" id="hour" min={0} max={999} 
-                    onChange={(e) => setHour(e.target.value)} value={hour} placeholder={0}/>
-                <input 
-                type="number" 
-                id="minutes" 
-                max={60} 
-                min={0} 
-                placeholder={0}
+            
+            {isPassed ? 
+                <div>
+                        <div>
+                    <input type="number" id="hour" min={0} max={999} 
+                        onChange={(e) => setHour(e.target.value)} value={hour} placeholder={0}/>
+                    {dict.InputTime.hours}
+                    <input 
+                    type="number" 
+                    id="minutes" 
+                    max={60} 
+                    min={0} 
+                    placeholder={0}
+                        onChange={(e) => {
+                            if(e.target.value > 59) {
+                                setMinute("59");
+                            } else {
+                                setMinute(e.target.value);
+                            }
+                        
+                        }}
+                    value={minute}
+                    />
+                    {dict.InputTime.minutes}
+                    <input type="number" id="seconds" max={60} min={0} placeholder={0}
                     onChange={(e) => {
                         if(e.target.value > 59) {
-                            setMinute("59");
+                            setSecond("59");
                         } else {
-                            setMinute(e.target.value);
+                            setSecond(e.target.value);
                         }
                     
-                    }}
-                value={minute}
-                />
-                <input type="number" id="seconds" max={60} min={0} placeholder={0}
-                onChange={(e) => {
-                    if(e.target.value > 59) {
-                        setSecond("59");
-                    } else {
-                        setSecond(e.target.value);
-                    }
+                    }}value={seconds}/>
+                    {dict.InputTime.seconds}
+                </div>
+                <button
+                onClick={setDeadline}>
+                    {dict.InputTime.focus_button_text}
+                </button>
+                </div>
                 
-                }}value={seconds}/>
-            </div>
-            <button
-            onClick={setDeadline}>
-                set deadline
-            </button>
+                :
+                <div>
+                    <div>
+                        {dict.InputTime.focus_mode_text}
+                        </div>
+                    <button
+                    onClick={resetDeadline}>
+                        {dict.InputTime.reset_button_text}
+                    </button>
+            
+                </div>
+                }
+           
             
             
             

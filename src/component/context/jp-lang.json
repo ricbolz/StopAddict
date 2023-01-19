@@ -1,0 +1,60 @@
+
+    {
+        "BlockList" : {
+            "url" : "URL",
+            "word" : "単語"
+        },
+        "Home" : {
+            "main_tab" : "メイン",
+            "block_list_tab" : "ブロックリスト",
+            "white_list_tab" : "ホワイトリスト",
+            "focus_mode_tab" : "集中モード"
+        },
+        "Header" : {
+            "status_on" : "オン",
+            "status_off" : "オフ"
+        },
+        "InputTime" : {
+            "days" : "日",
+            "hours" : "時",
+            "minutes" : "分",
+            "seconds" : "秒",
+            "focus_button_text" : "タイマー設定",
+            "focus_mode_text" : "集中モードが発動 !",
+            "reset_button_text" : "タイマーリセット"
+        },
+        "List" : {
+            "remove" : "削除"
+        },
+        "Main" : {
+            "block_button_text" : "このサイトをブロック",
+            "page_block" : "をブロックしますか？",
+            "page_blocked_cant" : "ページがブロックできません",
+            "page_blocked" : "ページがブロックされている"
+            
+        },
+        "Timer" : {
+            "days" : "日",
+            "hours" : "時",
+            "minutes" : "分",
+            "seconds" : "秒"
+        },
+        "UrlList" : {
+            "url_add" : "追加されたサイト: ",
+            "url_add_error" : "これはURLではありません、正しいURLを入力してください。",
+            "url_added" : "が追加されました"
+        },
+        "WordList" : {
+            "word_add" : "追加された単語 : ",
+            "word_add_error" : "単語ではありません",
+            "word_add_short" : "3字以上を入力してください",
+            "word_added" : "が追加されました"
+        },
+        "WhiteList" : {
+            "about" : "NG単語があってもサイトをアクセスする場合、ホワイトリストにサイトを追加したらブロックされません",
+            "url_add" : "ホワイトリストURLが追加された : ",
+            "url_add_error" : "これはURLではありません、正しいURLを入力してください。",
+            "url_add_error_block" : "サイトをブロックリストに削除してください。",
+            "url_added" : "が追加されました"
+        }
+    }

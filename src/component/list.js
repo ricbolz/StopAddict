@@ -1,6 +1,9 @@
 /*global chrome */
+import { useContext } from 'react';
 import styles from '../styles/Background.module.css';
+import { CurrentLangContext } from './context/currentLang';
 export default function List(props){
+    const {dict} = useContext(CurrentLangContext);
     function removeRule(url) {
         chrome.runtime.sendMessage({
          action: 'remove',
@@ -26,7 +29,7 @@ export default function List(props){
                 onClick={() => {
                     removeRule(props.url)
                 }}
-                >Remove</div></button>
+                >{dict.List.remove}</div></button>
             </div>
         </div>
     )

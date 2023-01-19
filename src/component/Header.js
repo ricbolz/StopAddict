@@ -1,9 +1,11 @@
 /*global chrome */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import Timer from "./Timer";
-import InputTime from "./timer/inputTime";
+import { LangContext } from "./context/langProvider";
+
+
 
 
 
@@ -13,7 +15,7 @@ export default function Header() {
     const [on, setOn] = useState(true);
     const [word, setWord] = useState('');
     const [deadline, setDeadline] = useState(new Date());
-
+    const {dictionary} = useContext(LangContext);
 
     chrome.storage.local.get("st", function(result) {
         console.log(result);
@@ -34,9 +36,9 @@ export default function Header() {
         // })
 
         if (on) {
-            setWord("ON");
+            setWord(dictionary.Header.status_on);
         } else {
-            setWord("OFF");
+            setWord(dictionary.Header.status_off);
         }
 
 
@@ -75,9 +77,10 @@ export default function Header() {
 
             </div>
             
-            <Timer deadline={deadline}/>
+            
             </div>
-            <InputTime/>
+            <Timer deadline={deadline}/>
+            
             
         </div>
         

@@ -1,9 +1,10 @@
 /*global chrome */
 import styles from '../styles/Background.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Timer from './Timer';
+import { CurrentLangContext } from './context/currentLang';
 export default function Main(){
-
+    const { userLanguage ,dict} = useContext(CurrentLangContext);
     const [url, setUrl] = useState('');
     // const [block, setBlock] = useState('');
     const [urlList, setUrlList] = useState({});
@@ -175,7 +176,7 @@ export default function Main(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  "This page is blocked" : (url.split('.').length < 2) ? "Can't block this page" :"Are you want to block " + url + "?"}
+                    {(blocked) ?  dict.Main.page_blocked : (url.split('.').length < 2) ? dict.Main.page_blocked_cant :  ((userLanguage === "en") ? dict.Main.page_block + " :" + url  : url + " " + dict.Main.page_block) + "?"}
                 </div>
                 {(!blocked & (url.split('.').length > 1)) ? 
                 <button className={styles.error}
@@ -184,7 +185,7 @@ export default function Main(){
                   
                 }}
             >
-                <div style={{color: 'white'}}>Block this site</div>
+                <div style={{color: 'white'}}>{dict.Main.block_button_text}</div>
             </button> : ''}
                 
                

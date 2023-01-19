@@ -1,10 +1,12 @@
 /*global chrome */
 import styles from "../styles/Background.module.css"
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import List from "./list";
 import { TextField } from "@mui/material";
+import { CurrentLangContext } from "./context/currentLang";
 export default function UrlList() {
+    const {dict} = useContext(CurrentLangContext)
     const [url, setUrl] = useState('');
     const [error,setError] = useState(false);
     const [errorText, setErrorText] = useState('');
@@ -98,7 +100,7 @@ export default function UrlList() {
         setError(true);
         if(validateUrl(url)) {
             if(urlList[url]) {
-                setErrorText(`"${url}" is already added`);
+                setErrorText(`"${url}" ` + dict.UrlList.url_added);
             } else {
             urlList[url] = "url";
             chrome.runtime.sendMessage({
@@ -107,11 +109,11 @@ export default function UrlList() {
                 url:url
             })
             setUrl('');
-            setErrorText("URL added: " + url);
+            setErrorText(dict.UrlList.url_add + url);
         }
         } else {
             
-            setErrorText("It is Not an URL, Try it With Another URL");
+            setErrorText(dict.UrlList.url_add_error);
         }
         
         

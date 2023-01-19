@@ -1,0 +1,60 @@
+
+    {
+        "BlockList" : {
+            "url" : "URL",
+            "word" : "Word"
+        },
+        "Home" : {
+            "main_tab" : "Main",
+            "block_list_tab" : "Block List",
+            "white_list_tab" : "White List",
+            "focus_mode_tab" : "Focus Mode"
+        },
+        "Header" : {
+            "status_on" : "ON",
+            "status_off" : "OFF"
+        },
+        "InputTime" : {
+            "days" : "Days",
+            "hours" : "Hours",
+            "minutes" : "Minutes",
+            "seconds" : "Seconds",
+            "focus_button_text" : "Set Focus Timer",
+            "focus_mode_text" : "Focus Mode is Activated !",
+            "reset_button_text" : "Reset Focus Timer"
+        },
+        "List" : {
+            "remove" : "remove"
+        },
+        "Main" : {
+            "block_button_text" : "Block this site",
+            "page_block" : "Are you want to block ",
+            "page_blocked_cant" : "Can't block this page",
+            "page_blocked" : "This page is blocked"
+            
+        },
+        "Timer" : {
+            "days" : "Days",
+            "hours" : "Hours",
+            "minutes" : "Minutes",
+            "seconds" : "Seconds"
+        },
+        "UrlList" : {
+            "url_add" : "URL added : ",
+            "url_add_error" : "It is Not an URL, Try it With Another URL",
+            "url_added" : "is already added "
+        },
+        "WordList" : {
+            "word_add" : "Word added : ",
+            "word_add_error" : "Not a word",
+            "word_add_short" : "Please input 3 or more characters",
+            "word_added" : "is already added "
+        },
+        "WhiteList" : {
+            "about" : "If you wish to access the website even it has restricted words you can fill it in here",
+            "url_add" : "White List URL added : ",
+            "url_add_error" : "It is Not an URL, Try it With Another URL",
+            "url_add_error_block" : "Please delete the url from blocked site first",
+            "url_added" : "is already added to White List"
+        }
+    }
