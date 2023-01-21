@@ -10,7 +10,6 @@ import WhiteList from './whiteList';
 import BlockList from './BlockList';
 import InputTime from './timer/inputTime';
 import styles from '../styles/Background.module.css';
-import { LangContext } from './context/langProvider';
 import { CurrentLangContext } from './context/currentLang';
 
 export default function Home() {

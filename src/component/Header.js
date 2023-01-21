@@ -3,7 +3,8 @@ import { useContext, useEffect, useState } from "react";
 
 import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import Timer from "./Timer";
-import { LangContext } from "./context/langProvider";
+import { CurrentLangContext } from "./context/currentLang";
+import { LangSwitcher } from "./context/langSwitcher";
 
 
 
@@ -15,7 +16,7 @@ export default function Header() {
     const [on, setOn] = useState(true);
     const [word, setWord] = useState('');
     const [deadline, setDeadline] = useState(new Date());
-    const {dictionary} = useContext(LangContext);
+    const {dict} = useContext(CurrentLangContext);
 
     chrome.storage.local.get("st", function(result) {
         console.log(result);
@@ -36,9 +37,9 @@ export default function Header() {
         // })
 
         if (on) {
-            setWord(dictionary.Header.status_on);
+            setWord(dict.Header.status_on);
         } else {
-            setWord(dictionary.Header.status_off);
+            setWord(dict.Header.status_off);
         }
 
 
@@ -79,6 +80,7 @@ export default function Header() {
             
             
             </div>
+            <LangSwitcher/>
             <Timer deadline={deadline}/>
             
             

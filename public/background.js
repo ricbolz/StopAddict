@@ -52,9 +52,9 @@ function getStatus() {
         console.log(focusStatus);
     })
 
-    storage.get('rcml-lang', function (result) {
+    storage.get('rl', function (result) {
         if(!result) {
-            storage.set({'rcml-lang' : 'en'});
+            storage.set({'rl' : 'en'});
         }
     })
     

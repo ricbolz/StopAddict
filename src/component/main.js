@@ -176,7 +176,7 @@ export default function Main(){
            
             <div className="body">
                 <div style={{margin: 10}}>
-                    {(blocked) ?  dict.Main.page_blocked : (url.split('.').length < 2) ? dict.Main.page_blocked_cant :  ((userLanguage === "en") ? dict.Main.page_block + " :" + url  : url + " " + dict.Main.page_block) + "?"}
+                    {(blocked) ?  dict.Main.page_blocked : (url.split('.').length < 2) ? dict.Main.page_blocked_cant :  ((userLanguage === "en") ? dict.Main.page_block + " " + url  : url + " " + dict.Main.page_block) + "?"}
                 </div>
                 {(!blocked & (url.split('.').length > 1)) ? 
                 <button className={styles.error}
