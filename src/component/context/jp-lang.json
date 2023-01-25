@@ -4,8 +4,19 @@
             "url" : "URL",
             "word" : "単語"
         },
+        "BlockPage" : {
+            "root_default" : "ブロックページをアクセスする",
+            "root_website" : "ブロックしたサイト : ",
+            "root_focus" : "集中モード内すべてのサイトをアクセスできない ",
+            "reason_focus" : "集中モードが作動されている",
+            "reason_website" : "理由 : ブロックされたサイト",
+            "reason_word": "理由: NG単語",
+            "title" : "ブロックページ",
+            "message" : "ここに何用だ？",
+            "visit_github_page" : "Githubにアクセス:"
+        },
         "Home" : {
-            "main_tab" : "メイン",
+            "main_tab" : "ホーム",
             "block_list_tab" : "ブロックリスト",
             "white_list_tab" : "ホワイトリスト",
             "focus_mode_tab" : "集中モード"
@@ -20,15 +31,16 @@
             "minutes" : "分",
             "seconds" : "秒",
             "focus_button_text" : "タイマー設定",
-            "focus_mode_text" : "集中モードが発動 !",
-            "reset_button_text" : "タイマーリセット"
+            "focus_mode_text" : "集中モードが作動されている !",
+            "reset_button_text" : "タイマーリセット",
+            "set_time_error" : "0秒以上を設定してください。"
         },
         "List" : {
             "remove" : "削除"
         },
         "Main" : {
-            "block_button_text" : "このサイトをブロック",
-            "page_block" : "をブロックしますか？",
+            "block_button_text" : "サイトをブロック",
+            "page_block" : "このリンクをブロックしますか？",
             "page_blocked_cant" : "ページがブロックできません",
             "page_blocked" : "ページがブロックされている"
             
@@ -37,6 +49,7 @@
             "days" : "日",
             "hours" : "時",
             "minutes" : "分",
+            "status_on" : "集中モードは作動されている !",
             "seconds" : "秒"
         },
         "UrlList" : {

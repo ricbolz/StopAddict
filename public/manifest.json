@@ -41,7 +41,7 @@
     "chrome-extension://*/*/*"
   ],
   "web_accessible_resources": [{
-    "resources": ["blocked.js"],
+    "resources": ["blocked.js", "en-lang.json", "jp-lang.json"],
     "matches" : ["<all_urls>"]
   }]
 

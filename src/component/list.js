@@ -1,4 +1,5 @@
 /*global chrome */
+import { fontWeight } from '@mui/system';
 import { useContext } from 'react';
 import styles from '../styles/Background.module.css';
 import { CurrentLangContext } from './context/currentLang';
@@ -16,8 +17,8 @@ export default function List(props){
         >
             <div 
             style={{
-                flex: 3
-                
+                flex: 3,
+                fontWeight: 'bold'
             }}>
                 {props.url}
             </div>

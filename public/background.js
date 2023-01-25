@@ -8,9 +8,12 @@ var whiteList = {};
 let blockNow;
 var focusStatus = false;
 var deadline;
+var language;
 var statusApp; //false means off
 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html";
-
+var goToBlockPage = "blocked.html?"
+const tabUrl = new Map();
+var startDeadline;
 function setStatus(status) {
     storage.set({"st": status}, function() {
         if(status) {
@@ -53,9 +56,11 @@ function getStatus() {
     })
 
     storage.get('rl', function (result) {
-        if(!result) {
+        if(!result.rl) {
             storage.set({'rl' : 'en'});
         }
+        language = result.rl;
+        goToBlockPage = goToBlockPage + "lang="+language;
     })
     
     
@@ -165,7 +170,7 @@ function deleteUrlHistory(url) {
 function redirectPage(tabId, url) {
     
     //chrome.tabs.create({url: "blocked.html?url="+url, active: true});
-    chrome.tabs.update(tabId, { url: "blocked.html?url="+url});
+    chrome.tabs.update(tabId, { url: goToBlockPage + "&url="+url});
     //chrome.tabs.remove(tabId);
     
 
@@ -227,13 +232,13 @@ function checkWord(title,text,url,tab) {
                 if(lowTitle.includes(key)) {
                     
                     deleteUrlHistory(formatted);
-                    chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });                
+                    chrome.tabs.update(tab, { url: goToBlockPage+"&word="+key+"&url="+formatted });                
                     break;
                 }
                 if(lowText.includes(key)) {
                     console.log(lowText);
                     deleteUrlHistory(formatted);
-                    chrome.tabs.update(tab, { url: "blocked.html?word="+key+"&url="+formatted });
+                    chrome.tabs.update(tab, { url: goToBlockPage + "&word="+key+"&url="+formatted });
                     
                     
                     break;
@@ -249,10 +254,59 @@ function startTimer(dl){
     focusStatus = true;
     console.log("focus: " + focusStatus);
     console.log(diff);
-    setTimeout(() => {
+    
+    if(diff > 0) {
+        chrome.tabs.query({}, function(tabs) {
+            tabs.forEach(function (tab) {
+                tabUrl.set(tab.id,tab.url);
+                console.log(tab.id + " with the url : " + tab.url)
+                chrome.tabs.update(tab.id, { url: goToBlockPage + "&focus=true" });
+            });
+          
+        })
+    } 
+    if(diff < 0) {
+        clearTimeout(startDeadline);
         focusStatus = false;
-        console.log("focus: " + focusStatus);
-    }, diff)
+            console.log("focus: " + focusStatus);
+
+            chrome.tabs.query({}, function(tabs) {
+                tabs.forEach(function (tab) {
+                    const pastUrl = tabUrl.get(tab.id);
+                    console.log(pastUrl);
+                    chrome.tabs.update(tab.id, {url : pastUrl} );
+                });
+            })
+            //tabUrl.clear();
+    }
+        startDeadline = setTimeout(() => {
+            focusStatus = false;
+            console.log("focus: " + focusStatus);
+
+            chrome.tabs.query({}, function(tabs) {
+                tabs.forEach(function (tab) {
+                    const pastUrl = tabUrl.get(tab.id);
+                    console.log(pastUrl);
+                    chrome.tabs.update(tab.id, {url : pastUrl} );
+                });
+            })
+        }, diff)
+    
+    
+        
+    
+    // else {
+    //     clearTimeout(startDeadline);
+    //     focusStatus = false;
+    //     chrome.tabs.query({}, function(tabs) {
+    //         tabs.forEach(function (tab) {
+    //             const pastUrl = tabUrl.get(tab.id);
+    //             console.log(tab.id + " with the url : " + pastUrl)
+    //             console.log(pastUrl);
+    //             chrome.tabs.update(tab.id, {url : pastUrl} );
+    //         });
+    //     })
+    // }
     
 }
 
@@ -320,7 +374,7 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
 
     else if(msg.action === 'blockWord') {
         deleteUrlHistory(msg.url);
-        chrome.tabs.update(msg.tab, { url: "blocked.html" });
+        chrome.tabs.update(msg.tab, { url: goToBlockPage });
         
     }
 
@@ -334,8 +388,12 @@ chrome.runtime.onMessage.addListener((msg = {}, sender) => {
             console.log("show deadline" + new Date(deadline));
         });
         startTimer(deadline);
-    }else {
-
+    }else if(msg.action === "changeLanguage"){
+        console.log("from " + language + " to " + msg.lang );
+        goToBlockPage = goToBlockPage.substring(0, goToBlockPage.length - 2);
+        goToBlockPage = goToBlockPage + msg.lang;
+        language = msg.lang;
+        console.log(goToBlockPage);
     }
     
     chrome.runtime.sendMessage({
@@ -449,8 +507,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         if(tab.url?.startsWith(blockPage)) return undefined;
         if (statusApp) {
             if(focusStatus) {
-                chrome.tabs.update(tab.id, { url: "blocked.html?focus=true" });
-               
+                chrome.tabs.update(tab.id, { url: goToBlockPage+"&focus=true" });
+                return undefined;
             }
             else if (tab.url) {
                 let blockPage = "chrome-extension://jpndajehapjaijkgibpmgbbppedelmca/blocked.html"
@@ -472,7 +530,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             
                     
                 })
-                console.log("reloaded");
                 checkURL(tab.url, tab.id);
                 
                 

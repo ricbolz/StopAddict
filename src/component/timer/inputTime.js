@@ -13,23 +13,33 @@ export default function InputTime() {
     const [seconds, setSecond] = useState("0");
     const [deadline, setDeadli] = useState(new Date().toLocaleString());
     const [isPassed, setPassed] = useState(true);
-    
+    const [error, setError] = useState('');
 
     function setDeadline(){
-        const newHour = hour*3600*1000;
-        const newMinute = minute*60*1000;
-        const newSecond = seconds*1000;
-        const nowDate = new Date(newHour + newMinute + newSecond + Date.now() + 1000)
-        setDeadli(nowDate.toLocaleString());
-        chrome.runtime.sendMessage({
-            action: "startFocusTimer",
-            deadline : nowDate.toLocaleString()
-        })
-        setPassed(false);
+        if(hour > "0" || minute > "0" || seconds > "0") {
+            setError('');
+            const newHour = hour*3600*1000;
+            const newMinute = minute*60*1000;
+            const newSecond = seconds*1000;
+            const nowDate = new Date(newHour + newMinute + newSecond + Date.now() + 1000)
+            setDeadli(nowDate.toLocaleString());
+            chrome.runtime.sendMessage({
+                action: "startFocusTimer",
+                deadline : nowDate.toLocaleString()
+            })
+            setPassed(false);
+            setTimeout(() => {
+                setPassed(true);
+            }, nowDate - new Date() - 1000);
+            
+        } else {
+            setError(dict.InputTime.set_time_error);
+        }
+        
     }
 
     function resetDeadline() {
-        const now = new Date().toLocaleString();
+        const now = new Date(0).toLocaleString();
         chrome.runtime.sendMessage({
             action: "startFocusTimer",
             deadline : now
@@ -47,7 +57,7 @@ export default function InputTime() {
                 setPassed(false);
                 setTimeout(() => {
                     setPassed(true);
-                }, nowDeadline - now);
+                }, nowDeadline - now - 1000);
             }
             
          })
@@ -91,9 +101,10 @@ export default function InputTime() {
                     {dict.InputTime.seconds}
                 </div>
                 <button
-                onClick={setDeadline}>
+                onClick={setDeadline} >
                     {dict.InputTime.focus_button_text}
                 </button>
+                <div>{error}</div>
                 </div>
                 
                 :

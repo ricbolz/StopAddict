@@ -3,7 +3,7 @@ import en from './en-lang.json';
 import jp from './jp-lang.json';
 //import { dictList } from './langOptions';
 export const CurrentLangContext = createContext({
-  userLanguage : 'en',
+  userLanguage : "en",
   dict : en,
   setLanguage : () => {}
 })

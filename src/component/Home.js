@@ -16,7 +16,7 @@ export default function Home() {
 
     const {dict} = useContext(CurrentLangContext);
     return(
-        <div style={{justifyContent: 'center', textAlign: 'center'}}>
+        <div style={{justifyContent: 'center', textAlign: 'center'}} className={styles.page}>
 
         <Header/>
             <Tabs
@@ -25,18 +25,19 @@ export default function Home() {
                 justify
                 mountOnEnter={true}
                 unmountOnExit={true}
+
             >
-                <Tab eventKey="Main" title={dict.Home.main_tab}>
+                <Tab eventKey="Main" title={dict.Home.main_tab} >
                     <Main/>
                 </Tab>
-                <Tab eventKey="BlockList" title={dict.Home.block_list_tab}>
+                <Tab eventKey="BlockList" title={dict.Home.block_list_tab} >
                     <BlockList/>
                 </Tab>
-                <Tab eventKey="WhiteList" title={dict.Home.white_list_tab}>
+                <Tab eventKey="WhiteList" title={dict.Home.white_list_tab} >
                     <WhiteList/>
                 </Tab>
                 <Tab eventKey="Timer" title={dict.Home.focus_mode_tab} >
-                    <div className={styles.page}>
+                    <div >
                         <InputTime/>
                     </div>
                     

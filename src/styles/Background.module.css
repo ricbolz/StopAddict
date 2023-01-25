@@ -1,9 +1,9 @@
 .page{
     background-color: #fff;
-    width: 400px;
+    width: 500px;
     height: 600px;
     text-align: center;
-    padding: 10px;
+    padding: 0px;
 }
 
 .error{
@@ -24,6 +24,7 @@
 
 .buttontext{
     color: rgba(255,255,255,100);
+    font-weight: bold;
 }
 
 .list{
@@ -32,11 +33,15 @@
     border-color: black;
     height: 30px;
     display: flex;
-    padding: 5px;
+   
     border-radius: 10px;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+}
+
+.listpage{
+    padding: 10px;
 }
 
 .remove {

@@ -19,6 +19,10 @@ function App() {
     setLanguage : selected => {
       const newLanguage = LangOptions[selected] ? selected : 'en'
       setLanguage(newLanguage);
+      chrome.runtime.sendMessage({
+        action : "changeLanguage",
+        lang : selected
+      })
       chrome.storage.local.set({'rl' : newLanguage});
     }};
   return (

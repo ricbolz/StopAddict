@@ -12,11 +12,11 @@ import { LangSwitcher } from "./context/langSwitcher";
 
 
 export default function Header() {
-
-    const [on, setOn] = useState(true);
-    const [word, setWord] = useState('');
-    const [deadline, setDeadline] = useState(new Date());
     const {dict} = useContext(CurrentLangContext);
+    const [on, setOn] = useState(true);
+    const [word, setWord] = useState("ON");
+    const [deadline, setDeadline] = useState(new Date());
+    
 
     chrome.storage.local.get("st", function(result) {
         console.log(result);
@@ -60,9 +60,9 @@ export default function Header() {
 
 
     return (
-        <div>
-            <div className="header" style={{ display: "flex", padding: 10 }}>
-            <h1 style={{ flex: 1 }}>Stop Addict</h1>
+        <div >
+            <div className="header" style={{ display: "flex" }}>
+            <h1 style={{ flex: 1, color: '#FFF0E9"'}}>Stop Addict</h1>
             <div style={{ flex: 1 }}>
                 <FormGroup>
                     <FormControlLabel control={

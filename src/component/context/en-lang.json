@@ -4,8 +4,19 @@
             "url" : "URL",
             "word" : "Word"
         },
+        "BlockPage" : {
+            "root_default" : "You are accessing the Block page",
+            "root_website" : "blocked website : ",
+            "root_focus" : "blocked all website in focus mode ",
+            "reason_focus" : "Focus mode has activated",
+            "reason_website" : "blocked reason: accessed blocked url ",
+            "reason_word": "blocked reason: it is contain restricted word ",
+            "title" : "BLOCKED PAGE",
+            "message" : "What are you doing in here? Get out !!",
+            "visit_github_page" : "Visit github page:"
+        },
         "Home" : {
-            "main_tab" : "Main",
+            "main_tab" : "Home",
             "block_list_tab" : "Block List",
             "white_list_tab" : "White List",
             "focus_mode_tab" : "Focus Mode"
@@ -21,14 +32,15 @@
             "seconds" : "Seconds",
             "focus_button_text" : "Set Focus Timer",
             "focus_mode_text" : "Focus Mode is Activated !",
-            "reset_button_text" : "Reset Focus Timer"
+            "reset_button_text" : "Reset Focus Timer",
+            "set_time_error" : "Please set time more than 0 seconds"
         },
         "List" : {
-            "remove" : "remove"
+            "remove" : "Remove"
         },
         "Main" : {
             "block_button_text" : "Block this site",
-            "page_block" : "Are you want to block ",
+            "page_block" : "Are you want to block this site?",
             "page_blocked_cant" : "Can't block this page",
             "page_blocked" : "This page is blocked"
             
@@ -37,6 +49,7 @@
             "days" : "Days",
             "hours" : "Hours",
             "minutes" : "Minutes",
+            "status_on" : "Focus Mode is On !",
             "seconds" : "Seconds"
         },
         "UrlList" : {

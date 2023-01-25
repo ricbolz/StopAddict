@@ -1,5 +1,5 @@
 /*global chrome */
-import styles from "../styles/Background.module.css"
+import styles from "../styles/Background.module.css";
 import React, { useContext, useEffect, useState } from 'react';
 import List from "./list";
 import { TextField } from "@mui/material";
@@ -125,7 +125,7 @@ export default function WordList(){
 
   
     return(
-        <div className={styles.page}>
+        <div >
             <div>
                 <TextField
                 label="WORD"
@@ -136,9 +136,9 @@ export default function WordList(){
                         handleSubmit();
                     }
                 }}/>
-                {error ? <div>{errorWarning}</div> : ""}
+                {error ? <div style={{color:'red'}}>{errorWarning}</div> : ""}
             </div>
-                <div>
+                <div >
                 {Object.keys(wordList).map((keyName, i) => (
                     <div>
                         <List id={wordList[keyName]} url={keyName}/>

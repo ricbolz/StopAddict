@@ -122,7 +122,7 @@ export default function UrlList() {
 
   
     return(
-        <div className={styles.page}>
+        <div >
             <div>
                 <TextField
                 label="URL"
@@ -135,7 +135,7 @@ export default function UrlList() {
                 }}/>
                 {error ? <div>{errorText}</div> : ""}
             </div>
-                <div>
+                <div >
                 {Object.keys(urlList).map((keyName, i) => (
                     <div>
                         <List id={urlList[keyName]} url={keyName}/>

@@ -134,7 +134,7 @@ export default function WhiteList() {
 
   
     return(
-        <div className={styles.page}>
+        <div >
             <div>{dict.WhiteList.about}</div>
             <div>
                 <TextField
@@ -148,7 +148,7 @@ export default function WhiteList() {
                 }}/>
                 {error ? <div>{errorText}</div> : ""}
             </div>
-                <div>
+                <div >
                 {Object.keys(whiteList).map((keyName, i) => (
                     <div>
                         <List id={whiteList[keyName]} url={keyName}/>
