@@ -13,28 +13,38 @@ export default function InputTime() {
     const [seconds, setSecond] = useState("0");
     const [deadline, setDeadli] = useState(new Date().toLocaleString());
     const [isPassed, setPassed] = useState(true);
+    const [status, setStatus] = useState(true);
     const [error, setError] = useState('');
 
     function setDeadline(){
-        if(hour > "0" || minute > "0" || seconds > "0") {
-            setError('');
-            const newHour = hour*3600*1000;
-            const newMinute = minute*60*1000;
-            const newSecond = seconds*1000;
-            const nowDate = new Date(newHour + newMinute + newSecond + Date.now() + 1000)
-            setDeadli(nowDate.toLocaleString());
-            chrome.runtime.sendMessage({
-                action: "startFocusTimer",
-                deadline : nowDate.toLocaleString()
-            })
-            setPassed(false);
-            setTimeout(() => {
-                setPassed(true);
-            }, nowDate - new Date() - 1000);
-            
-        } else {
-            setError(dict.InputTime.set_time_error);
-        }
+        chrome.storage.local.get("st", function(result) {
+            setStatus(result.st);
+            if(!status) {
+                setError(dict.InputTime.set_time_turn_on);
+                return undefined;
+            }
+            if(hour > "0" || minute > "0" || seconds > "0") {
+                
+                setError('');
+                const newHour = hour*3600*1000;
+                const newMinute = minute*60*1000;
+                const newSecond = seconds*1000;
+                const nowDate = new Date(newHour + newMinute + newSecond + Date.now() + 1000)
+                setDeadli(nowDate.toLocaleString());
+                chrome.runtime.sendMessage({
+                    action: "startFocusTimer",
+                    deadline : nowDate.toLocaleString()
+                })
+                setPassed(false);
+                setTimeout(() => {
+                    setPassed(true);
+                }, nowDate - new Date() - 1000);
+                
+            } else {
+                setError(dict.InputTime.set_time_error);
+            }
+        })
+        
         
     }
 

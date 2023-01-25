@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var root = document.getElementById('root');
             var reason = document.getElementById('reason');
+            var message = document.getElementById('message');
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const url = urlParams.get("url") 
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const lang = urlParams.get("lang");
             const dict = (lang === "jp" ? dict_jp : dict_en);
             //document.title = url + " blocked";
+            message.innerText = dict.BlockPage.message;
             if(word) {
                 
                 root.innerText = dict.BlockPage.root_website + url;

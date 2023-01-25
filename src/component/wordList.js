@@ -125,10 +125,10 @@ export default function WordList(){
 
   
     return(
-        <div >
-            <div>
+        <div style={{padding: 10}} >
+            <div >
                 <TextField
-                label="WORD"
+                label={dict.BlockList.word}
                 value={word}
                 onChange={handleChange}
                 onKeyUp={(event) => {

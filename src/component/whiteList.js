@@ -134,11 +134,11 @@ export default function WhiteList() {
 
   
     return(
-        <div >
+        <div style={{padding: 10}}>
             <div>{dict.WhiteList.about}</div>
             <div>
                 <TextField
-                label="URL"
+                label={dict.WhiteList.input_placeholder}
                 value={url}
                 onChange={handleChange}
                 onKeyUp={(event) => {

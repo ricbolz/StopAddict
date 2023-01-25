@@ -1,8 +1,8 @@
 
     {
         "BlockList" : {
-            "url" : "URL",
-            "word" : "Word"
+            "url" : "Blocked URL",
+            "word" : "Blocked Word"
         },
         "BlockPage" : {
             "root_default" : "You are accessing the Block page",
@@ -33,7 +33,8 @@
             "focus_button_text" : "Set Focus Timer",
             "focus_mode_text" : "Focus Mode is Activated !",
             "reset_button_text" : "Reset Focus Timer",
-            "set_time_error" : "Please set time more than 0 seconds"
+            "set_time_error" : "Please set time more than 0 seconds",
+            "set_time_turn_on" : "Please turn on the Blocking"
         },
         "List" : {
             "remove" : "Remove"
@@ -68,6 +69,7 @@
             "url_add" : "White List URL added : ",
             "url_add_error" : "It is Not an URL, Try it With Another URL",
             "url_add_error_block" : "Please delete the url from blocked site first",
-            "url_added" : "is already added to White List"
+            "url_added" : "is already added to White List",
+            "input_placeholder" : "URL"
         }
     }

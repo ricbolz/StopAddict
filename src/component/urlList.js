@@ -122,10 +122,10 @@ export default function UrlList() {
 
   
     return(
-        <div >
-            <div>
+        <div style={{padding: 10}}>
+            <div >
                 <TextField
-                label="URL"
+                label={dict.BlockList.url}
                 value={url}
                 onChange={handleChange}
                 onKeyUp={(event) => {

@@ -1,8 +1,8 @@
 
     {
         "BlockList" : {
-            "url" : "URL",
-            "word" : "単語"
+            "url" : "NGサイト",
+            "word" : "NG単語"
         },
         "BlockPage" : {
             "root_default" : "ブロックページをアクセスする",
@@ -33,7 +33,8 @@
             "focus_button_text" : "タイマー設定",
             "focus_mode_text" : "集中モードが作動されている !",
             "reset_button_text" : "タイマーリセット",
-            "set_time_error" : "0秒以上を設定してください。"
+            "set_time_error" : "0秒以上を設定してください。",
+            "set_time_turn_on" : "ブロックをオンにしてください。"
         },
         "List" : {
             "remove" : "削除"
@@ -68,6 +69,7 @@
             "url_add" : "ホワイトリストURLが追加された : ",
             "url_add_error" : "これはURLではありません、正しいURLを入力してください。",
             "url_add_error_block" : "サイトをブロックリストに削除してください。",
-            "url_added" : "が追加されました"
+            "url_added" : "が追加されました",
+            "input_placeholder" : "サイト"
         }
     }
